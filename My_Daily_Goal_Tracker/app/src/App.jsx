@@ -1,34 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+type Priority = "Indispenssable" | "Recommander" | "Sigma"
+
+type Task = {
+  id: number;
+  text: string;
+  priority: Priority;
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="flex justify-center">
+      <div className="w-12/13 flex-col gap-4 my-10 bg-base-300 p-5 rounded-2xl">
+        <div className="flex gap-4">
+          <input type="text" className="input w-full" placeholder="Ajouter une tâche"/>
+          <select className="select w-full">
+            <option value="Sigma">Sigma</option>
+            <option value="Recommander">Recommander</option>
+            <option value="Indispenssable">Indispenssable</option>
+          </select>
+        </div>
+      </div>      
+    </div>
   )
 }
 
