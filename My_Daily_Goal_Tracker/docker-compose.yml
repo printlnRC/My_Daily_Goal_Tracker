@@ -1,18 +1,18 @@
 services:
-  # Ton site web (le code)
+  # Le site web (le code)
   app:
-    build: .
+    build: ./app
     tty: true 
     stdin_open: true
     command: npm run dev -- --host
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
+      - ./app:/app
     depends_on:
       - db
 
-  # Ta base de données
+  # La base de données
   db:
     image: postgres:15
     environment:
