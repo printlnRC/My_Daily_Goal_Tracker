@@ -5,7 +5,6 @@ type Task = {
   text: string;
   priority: Priority;
 }
-
 function App() {
 
   return (
