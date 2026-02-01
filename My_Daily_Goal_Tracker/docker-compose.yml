@@ -14,6 +14,18 @@ services:
     depends_on:
       - db
 
+  server: # BACKEND
+    build: ./server
+    ports:
+      - "5000:5000"
+      - "5555:5555" # <-- LIGNE pour Prisma Studio
+    volumes:
+      - ./server:/server
+    environment:
+      - DATABASE_URL=${DATA_BASE_URL}
+    depends_on:
+      - db
+
   # La base de données
   db:
     image: postgres:15
