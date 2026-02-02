@@ -1,59 +1,59 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-// On exporte les types pour pouvoir les réutiliser ailleurs
-export type Priority = "Minimale" | "Recommander" | "Sigma";
+export default function GoalForm({ onGoalAdded }: { onGoalAdded: () => void }) {
+  const [text, setText] = useState('');
+  const [priority, setPriority] = useState('Sigma');
 
-export type Task = {
-  id: number;
-  text: string;
-  priority: Priority;
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!text.trim()) return;
 
-interface GoalFormProps {
-  onAddGoal: (task: Task) => void;
-}
+    try {
+      // Connexion au backend (Port 5000)
+      const response = await fetch('http://localhost:5000/api/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, priority }),
+      });
 
-export default function GoalForm({ onAddGoal }: GoalFormProps) {
-  const [input, setInput] = useState<string>("");
-  const [priority, setPriority] = useState<Priority>("Recommander");
-
-  const handleSubmit = () => {
-    if (input.trim() === "") return;
-
-    const newGoal: Task = {
-      id: Date.now(),
-      text: input.trim(),
-      priority: priority,
-    };
-
-    onAddGoal(newGoal); // On envoie l'objet à la fonction parente
-    setInput(""); // On vide le champ
-    setPriority("Recommander");
+      if (response.ok) {
+        setText(''); // On vide l'input
+        onGoalAdded(); // On demande à App.tsx de recharger la liste
+      }
+    } catch (error) {
+      console.error("Erreur de connexion au serveur :", error);
+    }
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 bg-base-300 p-5 rounded-2xl">
-      <div className="flex gap-4">
-        <input
+    <form onSubmit={handleSubmit} className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4">
+      <h2 className="text-xl font-bold text-primary">Nouvel Objectif</h2>
+      
+      <div className="form-control">
+        <input 
           type="text"
-          className="input w-full"
-          placeholder="Ajouter une tâche"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={text} 
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Ex: Maîtriser Docker..." 
+          className="input input-bordered w-full focus:input-primary"
         />
-        <select
-          className="select w-full"
+      </div>
+
+      <div className="flex gap-2">
+        <select 
+          className="select select-bordered flex-1"
           value={priority}
-          onChange={(e) => setPriority(e.target.value as Priority)}
+          onChange={(e) => setPriority(e.target.value)}
         >
-          <option value="Sigma">Sigma 🗿</option>
-          <option value="Recommander">Recommander</option>
-          <option value="Minimale">Minimale</option>
+          <option value="Sigma">🗿 Sigma</option>
+          <option value="Indispensable">🔥 Indispensable</option>
+          <option value="Cool">😎 Cool</option>
         </select>
-        <button onClick={handleSubmit} className="btn btn-primary">
+
+        <button type="submit" className="btn btn-primary px-8">
           Ajouter
         </button>
       </div>
-    </div>
+    </form>
   );
 }
