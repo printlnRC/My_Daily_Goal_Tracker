@@ -1,31 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GoalForm, { Task } from "./components/GoalForm";
-import { Toaster } from 'sonner';
+import GoalGet from "./components/GoalGet"; // Import sans le { Task } pour éviter le conflit
+import { Toaster, toast } from 'sonner';
 
 function App() {
   const [goals, setGoals] = useState<Task[]>([]);
 
-  // La seule fonction de gestion ici : ajouter l'objet reçu à la liste
+  // 1. Charger les goals existants au démarrage
+  useEffect(() => {
+    const loadGoals = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/goals');
+        if (response.ok) {
+          const data = await response.json();
+          setGoals(data);
+        }
+      } catch (error) {
+        toast.error("Impossible de charger les données");
+      }
+    };
+    loadGoals();
+  }, []);
+
+  // 2. Mettre à jour la liste quand un nouveau goal est ajouté
   const handleAddGoal = (newGoal: Task) => {
-    setGoals([newGoal, ...goals]);
+    setGoals((prevGoals) => [newGoal, ...prevGoals]);
   };
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-base-100 p-5 fle">
       <Toaster richColors position="top-right" />
-      <div className="flex flex-col items-center gap-4 p-5">
-        <div className="w-12/13 my-10">
-          {/* On appelle le composant et on lui passe la fonction de gestion */}
-          <GoalForm onAddGoal={handleAddGoal} />
-
-          {/* Ici tu pourras plus tard mapper tes goals pour les afficher */}
-          <div className="mt-5">
-            {goals.map((g) => (
-              <div key={g.id} className="p-2 border-b">
-                {g.text} - <span className="badge">{g.priority}</span>
-              </div>
-            ))}
+      
+      <div className="w-full">
+        <h1 className="text-4xl font-black text-center text-primary italic mb-8">DAILY GOAL TRACKER</h1>
+        
+        <div className="flex gap-8">
+          {/* LISTE DES GOALS */}
+          <div className="w-1/2">
+            <GoalGet goals={goals} />
           </div>
+
+          {/* FORMULAIRE */}
+          <div className="w-1/2">
+            <GoalForm onAddGoal={handleAddGoal} />
+          </div> 
         </div>
       </div>
     </div>
