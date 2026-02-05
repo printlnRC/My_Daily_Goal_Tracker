@@ -35,7 +35,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: any) => v
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4 h-1/2">
       <h2 className="text-xl font-bold text-primary text-center">Nouvel Objectif</h2>
       
       <div className="form-control">

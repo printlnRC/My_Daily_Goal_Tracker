@@ -23,7 +23,7 @@ export default function GoalGet({ goals }: GoalGetProps) {
   }
 
   return (
-    <div className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4 h-1/2">
+    <div className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4  h-1/2 overflow-y-auto pr-10">
       <h2 className="text-xl font-bold text-primary text-center">Mes Objectif</h2>
       {goals.map((goal) => (
         <div key={goal.id} className="card bg-base-100 shadow-md border border-base-300 hover:shadow-lg transition-shadow">
