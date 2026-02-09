@@ -17,5 +17,13 @@ export const goalService = {
     return await prisma.goal.findMany({
       orderBy: { createdAt: 'desc' }
     });
+  },
+
+  // server/src/services/goalService.ts
+  async toggleGoal(id: number, completed: boolean) {
+    return await prisma.goal.update({
+      where: { id },
+      data: { completed },
+    });
   }
 };

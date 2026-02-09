@@ -11,9 +11,10 @@ export interface Task {
 
 interface GoalGetProps {
   goals: Task[];
+  onToggle: (id: number, completed: boolean) => void;
 }
 
-export default function GoalGet({ goals }: GoalGetProps) {
+export default function GoalGet({ goals, onToggle }: GoalGetProps) {
   if (goals.length === 0) {
     return (
       <div className="text-center p-10 bg-base-200 rounded-xl border-2 border-dashed border-base-300">
@@ -38,14 +39,18 @@ export default function GoalGet({ goals }: GoalGetProps) {
             <div className="flex items-center gap-3">
               {/* Badge de priorité avec des couleurs dynamiques */}
               <div className={`badge badge-lg font-bold ${goal.priority === 'Sigma' ? 'badge-primary' :
-                  goal.priority === 'Indispensable' ? 'badge-error' : 'badge-ghost'
+                goal.priority === 'Indispensable' ? 'badge-error' : 'badge-ghost'
                 }`}>
                 {goal.priority === 'Sigma' ? '🗿 ' :
                   goal.priority === 'Indispensable' ? '🔥 ' : '😎 '}
                 {goal.priority}
               </div>
-
-              <input type="checkbox" checked={goal.completed} className="checkbox checkbox-primary" readOnly />
+              <input
+                  type="checkbox"
+                  checked={goal.completed}
+                  className="checkbox checkbox-primary"
+                  onChange={() => onToggle(goal.id, !goal.completed)}
+                />
             </div>
           </div>
         </div>
