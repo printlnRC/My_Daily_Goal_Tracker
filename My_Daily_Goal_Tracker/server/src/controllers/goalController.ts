@@ -28,9 +28,11 @@ export const goalController = {
     try {
       const { id } = req.params;
       const { completed } = req.body;
-      const updateGoal = await goalService.toggleGoal(id, completed);
+      console.log('Toggle request:', { id, completed });
+      const updateGoal = await goalService.toggleGoal(Number(id), completed);
       res.json(updateGoal);
     } catch (error) {
+      console.error('Error in toggle:', error);
       res.status(500).json({error : "Erreur lors de la mise a jour" });
     }
   }
