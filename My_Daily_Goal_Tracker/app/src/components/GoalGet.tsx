@@ -1,5 +1,10 @@
 // src/components/GoalGet.tsx
 
+/*
+Fonction 1 : affiche les goals enregistrer en bdd 
+Fonction 2 : checkbox pour valider le goal. reel SIGMA !!!!
+*/
+
 // On définit l'interface ici si tu n'as pas de fichier de types partagé
 export interface Task {
   id: number;
