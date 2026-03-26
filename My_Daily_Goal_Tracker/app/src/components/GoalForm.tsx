@@ -1,8 +1,21 @@
+/**
+ * GoalForm.tsx
+ * Le composant permet d'ajouter un nouveau GOAL en envoyant une requête POST à l'API.
+ * et l'utilisateur reçois un toast de confirmation ou d'erreur selon le résultat de la requête.
+ * @author Sam
+ * @param onAddGoal - Fonction passée depuis App.tsx pour ajouter le nouvel objectif à la liste affichée
+ * @returns Un formulaire avec un champ de texte, une sélection de priorité et un bouton d'ajout
+ * @version 1.0
+ * @date 2026-03-02
+ * @license MIT
+ */
+
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Goal } from '../types/goal';
 
 // On s'assure que le nom de la prop correspond à celui utilisé dans App.tsx
-export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: any) => void }) {
+export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Goal) => void }) {
   const [text, setText] = useState('');
   const [priority, setPriority] = useState('Sigma');
 
@@ -18,7 +31,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: any) => v
       });
 
       if (response.ok) {
-        const newGoal = await response.json(); // On récupère l'objet créé par la base
+        const newGoal: Goal = await response.json(); // On récupère l'objet créé par la base
         
         // 1. Déclenchement du Toast (succès)
         toast.success("Objectif ajouté au registre, Sigma ! 🗿"); 
