@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import GoalForm, { Task } from "./components/GoalForm";
 import GoalGet from "./components/GoalGet"; // Import sans le { Task } pour éviter le conflit
+import GoalGraph from "./components/GoalGraph";
 import { Toaster, toast } from 'sonner';
 
 function App() {
@@ -50,26 +51,38 @@ function App() {
     }
   };
 
-  return (
-    <div className="bg-base-100 p-10 flex flex-col items-center">
-      <h1 className="text-4xl font-black text-primary italic mb-10">DAILY GOAL TRACKER</h1>
+return (
+  <div className="bg-base-100 p-10 min-h-screen flex flex-col items-center">
+    <h1 className="text-4xl font-black text-primary italic mb-10">DAILY GOAL TRACKER</h1>
 
-      {/* Ligne principale : h-[50vh] garantit 50% de la hauteur de l'écran */}
-      <div className="flex w-full gap-8 h-screen">
+    {/* Conteneur principal qui contient TOUT le contenu sous le titre */}
+    <div className="flex flex-col w-full gap-8 max-w-6xl">
+      
+      {/* 1. SECTION DU HAUT : Le Graphe (Prend toute la largeur) */}
+      <div className="w-full h-[30vh]">
+        <div className="bg-base-300 h-full rounded-2xl shadow-lg flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-secondary">Graphe des Objectifs Validés (Bientôt...)</h2>
+          <GoalGraph />
+        </div>
+      </div>
 
+      {/* 2. SECTION DU BAS : Grille pour les deux blocs d'action */}
+      <div className="flex w-full gap-8 h-[50vh]">
+        
         {/* Bloc de Gauche (Liste) */}
-        <div className="w-full h-1/2">
+        <div className="flex-1 overflow-y-auto">
           <GoalGet goals={goals} onToggle={handleToggleGoal} />
         </div>
 
         {/* Bloc de Droite (Formulaire) */}
-        <div className="w-full h-1/2">
+        <div className="flex-1">
           <GoalForm onAddGoal={handleAddGoal} />
         </div>
 
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default App;
