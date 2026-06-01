@@ -1,10 +1,16 @@
 /**
- * Composant GoalGet : Affiche la liste des objectifs de l'utilisateur
- * Chaque objectif affiche son texte, sa priorité (avec un badge coloré) et une case à cocher pour marquer comme terminé.
- * Lorsque l'utilisateur coche ou décoche la case, une requête PATCH est envoyée au backend pour mettre à jour le statut de l'objectif,
+ * @file GoalGet.tsx
+ * @description Composant React pour afficher la liste des objectifs (goals) de l'utilisateur. 
+ * Chaque objectif est affiché dans une carte avec son texte, sa priorité, sa date de création et une case à cocher pour marquer l'objectif comme complété.
+ * Le composant reçoit une liste d'objectifs et une fonction de rappel pour gérer le changement d'état de complétion d'un objectif. 
+ * Si la liste est vide, un message invitant l'utilisateur à ajouter des objectifs est affiché.
+ * @version 1.0
+ * @author Sooz (Sam)
+ * @date 2026-03-02
+ * @license MIT
  */
-// On définit l'interface ici si tu n'as pas de fichier de types partagé
-import { Task } from "../types/goalget"; // Import de l'interface Task pour typer les props
+
+import { Task } from "../types/goalget";
 
 interface GoalGetProps {
   goals: Task[];
