@@ -12,12 +12,13 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Goal } from '../types/goal';
+import { Task } from '../types/goalget';
 
 // On s'assure que le nom de la prop correspond à celui utilisé dans App.tsx
-export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Goal) => void }) {
+export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => void }) {
   const [text, setText] = useState('');
   const [priority, setPriority] = useState('Sigma');
+  const [day, setDay] = useState<'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI' | 'DIMANCHE'>('LUNDI');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Goal) => 
       const response = await fetch('http://localhost:5000/api/goals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, priority }),
+        body: JSON.stringify({ text, priority, day }),
       });
 
       if (response.ok) {
@@ -71,6 +72,21 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Goal) => 
           <option value="Indispensable">🔥 Indispensable</option>
           <option value="Cool">😎 Cool</option>
         </select>
+
+        <select
+          className="select select-bordered flex-1"
+          value={day}
+          onChange={(e) => setDay(e.target.value as 'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI' | 'DIMANCHE')}
+        >
+          <option value="LUNDI">LUNDI</option>
+          <option value="MARDI">MARDI</option>
+          <option value="MERCREDI">MERCREDI</option>
+          <option value="JEUDI">JEUDI</option>
+          <option value="VENDREDI">VENDREDI</option>
+          <option value="SAMEDI">SAMEDI</option>
+          <option value="DIMANCHE">DIMANCHE</option>
+        </select>
+
 
         <button type="submit" className="btn btn-primary px-8 shadow-md">
           Ajouter

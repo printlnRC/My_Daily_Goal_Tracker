@@ -1,41 +1,53 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-const GoalChart = ({ goals }) => {
-  // Logique pour compter les goals complétés par jour (simplifiée ici)
-  const data = [
-    { day: 'Lun', qty: 2 },
-    { day: 'Mar', qty: 5 },
-    { day: 'Mer', qty: 3 },
-    { day: 'Jeu', qty: 8 },
-    { day: 'Ven', qty: 6 },
-  ];
-
+export default function GoalGraph({ graphData }: { graphData: any[] }) {
   return (
     <div className="bg-base-300 p-6 rounded-2xl shadow-lg h-full w-full">
-      <h2 className="text-xl font-bold text-secondary mb-4">Progression Hebdomadaire</h2>
-      <ResponsiveContainer width="100%" height="80%">
-        <AreaChart data={data}>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={graphData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
+            {/* Dégradé pour les objectifs créés (Primary - Violet) */}
             <linearGradient id="colorQty" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#641ae6" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#641ae6" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#c7d926" stopOpacity={0.4}/>
+              <stop offset="95%" stopColor="#c7d926" stopOpacity={0}/>
+            </linearGradient>
+            {/* Dégradé pour les objectifs terminés (Secondary - Rose ou Vert selon ton thème) */}
+            <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#27bd3b" stopOpacity={0.6}/>
+              <stop offset="95%" stopColor="#27bd3b" stopOpacity={0}/>
             </linearGradient>
           </defs>
+          
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#444" />
           <XAxis dataKey="day" stroke="#A6ADBB" />
-          <YAxis stroke="#A6ADBB" />
+          <YAxis stroke="#A6ADBB" allowDecimals={false} />
+          
           <Tooltip 
-            contentStyle={{ backgroundColor: '#1d232a', border: 'none', borderRadius: '8px' }}
+            contentStyle={{ backgroundColor: '#1d232a', border: 'none', borderRadius: '12px', color: '#fff' }}
           />
+          <Legend verticalAlign="top" height={36} />
+
+          {/* Courbe 1 : Objectifs Créés (Total) */}
           <Area 
+            name="Objectifs créés"
             type="monotone" 
             dataKey="qty" 
-            stroke="#641ae6" 
+            stroke="#c7d926" 
             fillOpacity={1} 
             fill="url(#colorQty)" 
+          />
+
+          {/* Courbe 2 : Objectifs Complétés */}
+          <Area 
+            name="Objectifs terminés"
+            type="monotone" 
+            dataKey="completed" 
+            stroke="#27bd3b" 
+            fillOpacity={1} 
+            fill="url(#colorCompleted)" 
           />
         </AreaChart>
       </ResponsiveContainer>
     </div>
   );
-};
+}

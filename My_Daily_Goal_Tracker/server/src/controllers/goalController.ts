@@ -1,18 +1,29 @@
+/** 
+ * @file goalController.ts
+ * @description Contrôleur pour gérer les objectifs (goals) de l'application.
+ * Il contient les fonctions pour créer un objectif, récupérer tous les objectifs et basculer le statut d'un objectif.
+ * Ces fonctions sont utilisées dans les routes correspondantes pour traiter les requêtes HTTP.
+ * @version 1.0
+ * @author Sooz (Sam)
+ * @date 2026-03-02
+ * @license MIT
+*/
+
 import { Request, Response } from 'express';
-import { goalService } from '../services/goalService.js';
+import { goalService } from '../services/goalGet.js';
 import { Prisma } from '@prisma/client';
 
 export const goalController = {
   create: async (req: Request, res: Response) => {
     try {
-      const { text, priority } = req.body;
+      const { text, priority, day } = req.body;
 
       // Petite validation "middleware" simplifiée ici
       if (!text) {
         return res.status(400).json({ error: "Le texte est obligatoire" });
       }
 
-      const newGoal = await goalService.createGoal(text, priority);
+      const newGoal = await goalService.createGoal(text, priority, day);
       res.status(201).json(newGoal);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la création" });
