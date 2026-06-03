@@ -44,5 +44,27 @@ export const goalGraphController = {
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe" });
     }
+  },
+
+  /** 
+   * @brief Récupère le jour d'un objectif.
+   * @param req - La requête HTTP.
+   * @param res - La réponse HTTP.
+   */
+  getDayOfGoal: async (req: Request, res: Response) => {
+    const goalId = parseInt(req.params.id, 10);
+    if (isNaN(goalId)) {
+      return res.status(400).json({ error: "ID d'objectif invalide" });
+    }
+
+    try {
+      const result = await goalGraphService.getDayOfGoal(goalId);
+      if (!result) {
+        return res.status(404).json({ error: "Objectif non trouvé" });
+      }
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération du jour de l'objectif" });
+    }
   }
 };

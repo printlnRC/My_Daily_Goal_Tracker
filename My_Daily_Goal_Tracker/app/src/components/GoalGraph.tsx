@@ -35,7 +35,14 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
           </defs>
           
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#444" />
-          <XAxis dataKey="day" stroke="#A6ADBB" />
+          <XAxis 
+            dataKey="day" 
+            stroke="#A6ADBB"
+            tickFormatter={(value, index) => {
+              const dataPoint = graphData[index];
+              return dataPoint ? `${value}\n${dataPoint.date}` : value;
+            }}
+          />
           <YAxis stroke="#A6ADBB" allowDecimals={false} />
           
           <Tooltip 

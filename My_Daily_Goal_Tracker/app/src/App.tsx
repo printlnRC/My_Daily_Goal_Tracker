@@ -32,10 +32,22 @@ function App() {
       const totals = await resTotal.json();
       const completeds = await resCompleted.json();
 
-      const weeklyData: { [key: string]: { day: string; qty: number; completed: number; order: number } } = {};
-      Object.keys(DAYS_MAP).forEach((key) => {
+      // Calculer les dates de la semaine (lundi à dimanche)
+      const today = new Date();
+      const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1; // 0=lundi, 6=dimanche
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - dayOfWeek);
+
+      const weeklyData: { [key: string]: { day: string; date: string; qty: number; completed: number; order: number } } = {};
+      const daysOrder = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'];
+      daysOrder.forEach((key, index) => {
+        const dateForDay = new Date(startOfWeek);
+        dateForDay.setDate(startOfWeek.getDate() + index);
+        const formattedDate = dateForDay.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+        
         weeklyData[key] = {
           day: DAYS_MAP[key].label,
+          date: formattedDate,
           qty: 0,
           completed: 0,
           order: DAYS_MAP[key].order

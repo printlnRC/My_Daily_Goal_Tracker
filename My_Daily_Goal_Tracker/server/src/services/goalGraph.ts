@@ -51,6 +51,13 @@ export const goalGraphService = {
                 day: true,
             },
         });
+    },
+
+    async getDayOfGoal(id: number) {
+        return await prisma.goal.findUnique({
+            where: { id },
+            select: { day: true },
+        });
     }
 }
 

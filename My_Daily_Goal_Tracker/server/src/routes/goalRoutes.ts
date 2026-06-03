@@ -43,5 +43,10 @@ router.get('/graph', goalGraphController.getNbGoalPerDay);
  */
 router.get('/graph/completed', goalGraphController.getCompletedGoalsPerDay);
 
+/** 
+ * @brief Route pour récupérer le jour d'un objectif.
+ * @description Cette route reçoit une requête GET avec l'ID d'un objectif dans les paramètres de la route. Elle utilise le contrôleur `goalGraphController.getDayOfGoal` pour récupérer le jour de l'objectif et le renvoyer en réponse.
+ */
+router.get('/:id/day', goalGraphController.getDayOfGoal);
 
 export default router;
