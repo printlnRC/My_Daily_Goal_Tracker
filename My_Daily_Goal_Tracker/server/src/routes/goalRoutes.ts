@@ -43,5 +43,17 @@ router.get('/graph', goalGraphController.getNbGoalPerDay);
  */
 router.get('/graph/completed', goalGraphController.getCompletedGoalsPerDay);
 
+/**
+ * @brief Route pour récupérer les données du graphique des objectifs par priorité.
+ * @description Cette route reçoit une requête GET avec la priorité dans les paramètres de la route. Elle utilise le contrôleur `goalGraphController.getNbGoalPerDayByPriority` pour récupérer les données du graphique et les renvoyer en réponse.
+ */
+router.get('/graph/priority/:priority', goalGraphController.getNbGoalPerDayByPriority);
+
+/**
+ * @brief Route pour récupérer les données du graphique des objectifs terminés par priorité.
+ * @description Cette route reçoit une requête GET avec la priorité dans les paramètres de la route. Elle utilise le contrôleur `goalGraphController.getCompletedGoalsPerDayByPriority` pour récupérer les données du graphique et les renvoyer en réponse.
+ */
+router.get('/graph/completed/priority/:priority', goalGraphController.getCompletedGoalsPerDayByPriority);
+
 
 export default router;

@@ -44,5 +44,49 @@ export const goalGraphController = {
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe" });
     }
+  },
+
+  /** * @brief Récupère le nombre d'objectifs par jour selon une priorité spécifique.
+   * @param req - La requête HTTP.
+   * @param res - La réponse HTTP.
+   */
+  getNbGoalPerDayByPriority: async (req: Request, res: Response) => {
+    const { priority } = req.params;
+    try {
+      let graphData;
+      
+      // Si la priorité est "Tous", on appelle la fonction globale que tu as déjà codée !
+      if (priority === 'Tous') {
+        graphData = await goalGraphService.getNbGoalPerDay();
+      } else {
+        graphData = await goalGraphService.getNbGoalPerDayByPriority(priority);
+      }
+      
+      res.json(graphData);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération des données du graphe par priorité" });
+    }
+  },
+
+  /** * @brief Récupère le nombre d'objectifs terminés par jour selon une priorité spécifique.
+   * @param req - La requête HTTP.
+   * @param res - La réponse HTTP.
+   */
+  getCompletedGoalsPerDayByPriority: async (req: Request, res: Response) => {
+    const { priority } = req.params;
+    try {
+      let graphData;
+      
+      // Même logique : si "Tous", on utilise ton deuxième contrôleur existant
+      if (priority === 'Tous') {
+        graphData = await goalGraphService.getCompletedGoalsPerDay();
+      } else {
+        graphData = await goalGraphService.getCompletedGoalsPerDayByPriority(priority);
+      }
+      
+      res.json(graphData);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération des données du graphe par priorité" });
+    }
   }
 };

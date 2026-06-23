@@ -1,20 +1,13 @@
 import { useState, useEffect } from "react";
 import GoalForm from "./components/GoalForm";
 import { Task } from "./types/goalget";
+import { DAYS_MAP } from "./types/goalGrap"; // Import de la constante DAYS_MAP pour l'utiliser dans le composant
 import GoalGet from "./components/GoalGet";
 import GoalGraph from "./components/GoalGraph";
 import { Toaster, toast } from 'sonner';
 import { GoalGraphData } from "./types/goalGrap"; // Import de l'interface pour typer les données du graphe 
 
-const DAYS_MAP: { [key: string]: { order: number; label: string } } = {
-  LUNDI: { order: 1, label: 'Lun' },
-  MARDI: { order: 2, label: 'Mar' },
-  MERCREDI: { order: 3, label: 'Mer' },
-  JEUDI: { order: 4, label: 'Jeu' },
-  VENDREDI: { order: 5, label: 'Ven' },
-  SAMEDI: { order: 6, label: 'Sam' },
-  DIMANCHE: { order: 7, label: 'Dim' }
-};
+
 
 function App() {
   const [goals, setGoals] = useState<Task[]>([]);

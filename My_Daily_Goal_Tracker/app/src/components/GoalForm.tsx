@@ -60,7 +60,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
           placeholder="Ex: Maîtriser Docker..." 
           className="input input-bordered w-full focus:input-primary"
         />
-      </div>
+      </div>objectif
 
       <div className="flex gap-2">
         <select 

@@ -51,6 +51,41 @@ export const goalGraphService = {
                 day: true,
             },
         });
+    },
+
+    /**
+     * @brief Fonction pour récupérer le nombre d'objectifs (goals) par jour de la semaine selon une priorité spécifique.
+     * @param priority La priorité pour laquelle filtrer les objectifs.
+     * @returns Un objet contenant le nombre d'objectifs pour chaque jour de la semaine.
+     */
+    async getNbGoalPerDayByPriority(priority: string) {
+        return await prisma.goal.groupBy({
+            by: ['day'],
+            where: {
+                priority: priority,
+            },
+            _count: {
+                day: true,
+            },
+        });
+    },
+
+    /**
+     * @brief Fonction pour récupérer le nombre d'objectifs (goals) terminés par jour de la semaine selon une priorité spécifique.
+     * @param priority La priorité pour laquelle filtrer les objectifs terminés.
+     * @returns Un objet contenant le nombre d'objectifs terminés pour chaque jour de la semaine.
+     */
+    async getCompletedGoalsPerDayByPriority(priority: string) {
+        return await prisma.goal.groupBy({
+            by: ['day'],
+            where: {
+                completed: true,
+                priority: priority,
+            },
+            _count: {
+                day: true,
+            },
+        });
     }
 }
 
