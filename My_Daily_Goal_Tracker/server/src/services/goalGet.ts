@@ -53,5 +53,18 @@ export const goalService = {
       where: { id },
       data: { completed },
     });
+  },
+  /**
+   * @brief Fonction pour supprimer un objectif (goal) de la base de données.
+   * @param id - L'identifiant de l'objectif à supprimer.
+   * @returns L'objectif supprimé ou null si l'objectif n'existe pas.
+   * @throws Une erreur si la suppression échoue.
+   * 
+   * Cette fonction utilise Prisma pour supprimer un objectif de la base de données en fonction de son identifiant. Elle est utilisée pour gérer les interactions de l'utilisateur avec l'interface utilisateur, permettant ainsi de supprimer des objectifs existants.
+   */
+  async deleteGoal(id: number) {
+    return await prisma.goal.delete({
+      where: { id },
+    });
   }
 };

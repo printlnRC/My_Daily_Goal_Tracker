@@ -89,14 +89,31 @@ function App() {
       if (response.ok) {
         const updatedGoal = await response.json();
 
-        // On met à jour l'état local pour que React redessine la liste
-        setGoals(goals.map(g => g.id === id ? updatedGoal : g));
+        setGoals(prevGoals => prevGoals.map(g => g.id === id ? updatedGoal : g));
 
         if (completed) {
           toast.success("Objectif validé ! 🗿");
         }
 
         await loadGraphData();
+      }
+    } catch (error) {
+      toast.error("Erreur de connexion au serveur");
+    }
+  };
+
+  const handleDeleteGoal = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/goals/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setGoals(prevGoals => prevGoals.filter((goal) => goal.id !== id));
+        toast.success("Objectif supprimé !");
+        await loadGraphData();
+      } else {
+        toast.error("Impossible de supprimer cet objectif");
       }
     } catch (error) {
       toast.error("Erreur de connexion au serveur");
@@ -130,7 +147,7 @@ return (
         
         {/* Bloc de Gauche (Liste) */}
         <div className="flex-1 overflow-y-auto">
-          <GoalGet goals={goals} onToggle={handleToggleGoal} />
+          <GoalGet goals={goals} onToggle={handleToggleGoal} onDelete={handleDeleteGoal} />
         </div>
 
         {/* Bloc de Droite (Formulaire) */}

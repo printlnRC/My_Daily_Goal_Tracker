@@ -46,5 +46,20 @@ export const goalController = {
       console.error('Error in toggle:', error);
       res.status(500).json({error : "Erreur lors de la mise a jour" });
     }
+  },
+  delete: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deletedGoal = await goalService.deleteGoal(Number(id));
+      if (deletedGoal) {
+        res.json({ message: "Objectif supprimé avec succès" });
+      } else {
+        res.status(404).json({ error: "Objectif non trouvé" });
+      }
+    } catch (error) {
+      console.error('Error in delete:', error);
+      res.status(500).json({ error: "Erreur lors de la suppression" });
+    }
   }
+  
 };

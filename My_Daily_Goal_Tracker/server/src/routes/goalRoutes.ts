@@ -55,5 +55,10 @@ router.get('/graph/priority/:priority', goalGraphController.getNbGoalPerDayByPri
  */
 router.get('/graph/completed/priority/:priority', goalGraphController.getCompletedGoalsPerDayByPriority);
 
+/** 
+ * @brief Route pour supprimer un objectif.
+ * @description Cette route reçoit une requête DELETE avec l'ID d'un objectif dans les paramètres de la route. Elle utilise le contrôleur `goalController.delete` pour supprimer l'objectif et renvoie une réponse de confirmation.
+ */
+router.delete('/:id', goalController.delete);
 
 export default router;
