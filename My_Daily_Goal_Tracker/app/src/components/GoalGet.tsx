@@ -45,25 +45,32 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
   const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
   return (
-    <div className="bg-base-200 p-6 rounded-2xl shadow-lg h-full overflow-auto">
-      <h2 className="text-xl font-bold text-primary text-center mb-4">Mes Objectifs</h2>
+    <div className="bg-base-200 p-6 rounded-2xl shadow-lg h-full flex flex-col">
+      <h2 className="text-xl font-bold text-primary text-center mb-4 shrink-0">
+        Mes Objectifs
+      </h2>
+      <div className="overflow-x-auto flex-1">
+        <table className="table table-compact w-full table-fixed">
 
-      <div className="overflow-x-auto h-full">
-        <table className="table table-compact w-full">
-          <thead>
+          <thead className="sticky top-0 z-20 bg-base-200">
             <tr>
               {DAYS_ORDER.map((d) => (
-                <th key={d} className="text-center">{capitalize(d)}</th>
+                <th key={d} className="text-center bg-base-200 py-3">
+                  {capitalize(d)}
+                </th>
               ))}
             </tr>
           </thead>
+
           <tbody>
             <tr>
               {DAYS_ORDER.map((d) => (
-                <td key={d} className="align-top py-4">
-                  <div className="flex flex-col gap-3">
+                <td key={d} className="align-top p-2">
+                  <div className="flex flex-col gap-3 max-h-[38vh] overflow-y-auto pr-1">
                     {(grouped[d] || []).length === 0 ? (
-                      <div className="text-sm text-gray-400 italic">Aucun</div>
+                      <div className="text-sm text-gray-400 italic text-center py-2">
+                        Aucun
+                      </div>
                     ) : (
                       (grouped[d] || []).map((goal) => {
                         const isOpen = openId === goal.id;
@@ -71,37 +78,43 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
                         return (
                           <div
                             key={goal.id}
-                            className={`card bg-base-100 shadow-sm border border-base-300 p-3 ${isOpen ? 'mb-14' : ''}`}
+                            className={`relative card bg-base-100 shadow-sm border border-base-300 p-3 shrink-0 ${isOpen ? 'mb-14' : ''}`}
                             onClick={() => setOpenId(isOpen ? null : goal.id)}
                             role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpenId(isOpen ? null : goal.id); }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') setOpenId(isOpen ? null : goal.id);
+                            }}
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1">
-                                <div className="font-medium">{goal.text}</div>
-                                <div className="text-xs text-gray-400">{new Date(goal.createdAt).toLocaleDateString()}</div>
+                                <div className="font-medium text-sm">{goal.text}</div>
+                                <div className="text-xs text-gray-400">
+                                  {new Date(goal.createdAt).toLocaleDateString()}
+                                </div>
+                                <div className={`badge badge-sm ${goal.priority === 'Sigma' ? 'badge-primary' : goal.priority === 'Indispensable' ? 'badge-error' : 'badge-ghost'}`}>
+                                  {goal.priority}
+                                </div>
                               </div>
 
                               <div className="flex flex-col items-end gap-2">
-                                <div className={`badge ${goal.priority === 'Sigma' ? 'badge-primary' : goal.priority === 'Indispensable' ? 'badge-error' : 'badge-ghost'}`}>{goal.priority}</div>
                                 <input
                                   type="checkbox"
                                   checked={goal.completed}
-                                  className="checkbox checkbox-sm checkbox-primary"
+                                  className="checkbox checkbox-md checkbox-primary"
                                   onClick={(e) => e.stopPropagation()}
                                   onChange={() => onToggle(goal.id, !goal.completed)}
                                 />
                               </div>
                             </div>
 
+                            {/* Menu d'actions */}
                             <div
                               className={`absolute left-0 top-full mt-2 w-full bg-base-100 rounded-lg shadow-lg z-30 transform transition duration-200 ease-out origin-top-right ${isOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-2 scale-95 pointer-events-none"}`}
                               aria-hidden={!isOpen}
                               onClick={(e) => e.stopPropagation()}
                             >
                               <div className="flex flex-row justify-between items-center gap-2 p-2 w-full rounded-2xl shadow-md">
-
                                 <button
                                   className="flex-1 relative overflow-hidden text-red-500 font-medium bg-transparent px-4 py-2 rounded-xl transition-all duration-300 ease-in-out hover:text-white hover:bg-red-600 active:scale-95 whitespace-nowrap"
                                   onClick={(e) => {
@@ -113,6 +126,7 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
                                 </button>
                               </div>
                             </div>
+
                           </div>
                         );
                       })
@@ -122,6 +136,7 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
               ))}
             </tr>
           </tbody>
+
         </table>
       </div>
     </div>

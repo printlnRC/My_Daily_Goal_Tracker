@@ -97,15 +97,15 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
             <YAxis stroke="#A6ADBB" allowDecimals={false} />
             
             <Tooltip 
-              contentStyle={{ backgroundColor: '#1d232a', border: 'none', borderRadius: '12px', color: '#fff' }}
+              contentStyle={{ backgroundColor: '#F7F3E8', border: 'none', borderRadius: '12px', color: '#fff' }}
             />
             <Legend verticalAlign="top" height={36} />
 
             <Area 
-              name="Objectifs créés"
+              name="Objectifs non terminés"
               type="monotone" 
               dataKey="qty" 
-              stroke="#c7d926" 
+              stroke="#1F2A2A" 
               fillOpacity={1} 
               fill="url(#colorQty)" 
             />
@@ -114,7 +114,7 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
               name="Objectifs terminés"
               type="monotone" 
               dataKey="completed" 
-              stroke="#27bd3b" 
+              stroke="#2E8B57" 
               fillOpacity={1} 
               fill="url(#colorCompleted)" 
             />

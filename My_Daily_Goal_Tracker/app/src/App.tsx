@@ -125,8 +125,8 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-base-100 p-10 min-h-screen flex flex-col items-center">
-      <h1 className="text-4xl font-black text-primary italic mb-10">DAILY GOAL TRACKER</h1>
+    <div className="bg-base-100 p-3 min-h-screen flex flex-col items-center">
+      <h1 className="text-4xl font-black text-primary italic mb-3">DAILY GOAL TRACKER</h1>
 
       {/* Conteneur principal qui contient TOUT le contenu sous le titre */}
       <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
