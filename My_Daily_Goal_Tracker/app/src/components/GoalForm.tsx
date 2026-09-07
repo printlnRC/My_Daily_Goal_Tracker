@@ -32,7 +32,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
       });
 
       if (response.ok) {
-        const newGoal: Goal = await response.json(); // On récupère l'objet créé par la base
+        const newGoal: Task = await response.json(); // On récupère l'objet créé par la base
         
         // 1. Déclenchement du Toast (succès)
         toast.success("Objectif ajouté au registre, Sigma ! 🗿"); 
@@ -60,7 +60,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
           placeholder="Ex: Maîtriser Docker..." 
           className="input input-bordered w-full focus:input-primary"
         />
-      </div>objectif
+      </div>
 
       <div className="flex gap-2">
         <select 

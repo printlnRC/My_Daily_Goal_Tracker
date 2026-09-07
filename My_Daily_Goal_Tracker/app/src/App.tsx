@@ -124,41 +124,38 @@ function App() {
     loadGraphData();
   }, []);
 
-return (
-  <div className="bg-base-100 p-10 min-h-screen flex flex-col items-center">
-    <h1 className="text-4xl font-black text-primary italic mb-10">DAILY GOAL TRACKER</h1>
+  return (
+    <div className="bg-base-100 p-10 min-h-screen flex flex-col items-center">
+      <h1 className="text-4xl font-black text-primary italic mb-10">DAILY GOAL TRACKER</h1>
 
-    {/* Conteneur principal qui contient TOUT le contenu sous le titre */}
-    <div className="flex flex-col w-full gap-8 max-w-6xl">
-      
-      {/* 1. SECTION DU HAUT : Le Graphe (Prend toute la largeur) */}
-      <div className="w-full h-[35vh]">
-          {loading ? (
-            <div className="bg-base-300 h-full rounded-2xl flex items-center justify-center animate-pulse">
-              <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-          ) : (
-            <GoalGraph graphData={graphData} />
-          )}
+      {/* Conteneur principal qui contient TOUT le contenu sous le titre */}
+      <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
+
+        {/* 1. SECTION DU HAUT : Graphe + Formulaire côte-à-côte */}
+        <div className="w-full h-[35vh] flex gap-8">
+          <div className="flex-2 h-full">
+            {loading ? (
+              <div className="bg-base-300 h-full rounded-2xl flex items-center justify-center animate-pulse">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+              </div>
+            ) : (
+              <GoalGraph graphData={graphData} />
+            )}
+          </div>
+
+          {/* Formulaire à droite du graphe */}
+          <div className="w-96 h-full">
+            <GoalForm onAddGoal={handleAddGoal} />
+          </div>
         </div>
 
-      {/* 2. SECTION DU BAS : Grille pour les deux blocs d'action */}
-      <div className="flex w-full gap-8 h-[50vh]">
-        
-        {/* Bloc de Gauche (Liste) */}
-        <div className="flex-1 overflow-y-auto">
+        {/* 2. SECTION DU BAS : Liste des objectifs (tableau jour-par-jour) */}
+        <div className="w-full h-[50vh]">
           <GoalGet goals={goals} onToggle={handleToggleGoal} onDelete={handleDeleteGoal} />
         </div>
-
-        {/* Bloc de Droite (Formulaire) */}
-        <div className="flex-1">
-          <GoalForm onAddGoal={handleAddGoal} />
-        </div>
-
       </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;
