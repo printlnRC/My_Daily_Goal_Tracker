@@ -12,7 +12,9 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { Task } from '../types/goalget';
+import { goalSchema } from '../lib/schemas';
 
 // On s'assure que le nom de la prop correspond à celui utilisé dans App.tsx
 export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => void }) {
@@ -22,7 +24,13 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return;
+
+    const payload = goalSchema.safeParse({ text, priority, day });
+
+    if (!payload.success) {
+      toast.error(payload.error.issues[0].message);
+      return;
+    }
 
     const token = localStorage.getItem('daily-goal-token');
 
@@ -33,7 +41,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ text, priority, day }),
+        body: JSON.stringify(payload.data),
       });
 
       if (response.ok) {

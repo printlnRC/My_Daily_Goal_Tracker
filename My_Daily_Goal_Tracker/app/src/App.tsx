@@ -6,6 +6,7 @@ import GoalGet from "./components/GoalGet";
 import GoalGraph from "./components/GoalGraph";
 import { toast } from 'sonner';
 import { GoalGraphData } from "./types/goalGrap";
+import { loginSchema } from './lib/schemas';
 
 const API_BASE = 'http://localhost:5000';
 
@@ -194,8 +195,10 @@ function App() {
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
-      setLoginError('Veuillez remplir email et mot de passe.');
+    const parsed = loginSchema.safeParse({ email, password });
+
+    if (!parsed.success) {
+      setLoginError(parsed.error.issues[0].message);
       return;
     }
 
@@ -206,7 +209,7 @@ function App() {
       const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify(parsed.data),
       });
 
       const data = await response.json();
