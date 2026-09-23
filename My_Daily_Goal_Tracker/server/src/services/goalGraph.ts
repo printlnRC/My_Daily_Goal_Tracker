@@ -14,23 +14,11 @@ export const goalGraphService = {
     /**
  * @brief Fonction pour récupérer le nombre d'objectifs (goals) créés par jour de la semaine.
  * @returns Un objet contenant le nombre d'objectifs créés pour chaque jour de la semaine.
- * 
- * Cette fonction interagit avec la base de données pour compter le nombre d'objectifs créés pour chaque jour de la semaine. Elle est utilisée pour générer des graphiques qui affichent la répartition des objectifs créés au fil du temps, permettant ainsi à l'utilisateur de visualiser les jours où il est le plus productif.
- * 
- * Exemple de retour :
- * {
- *   "LUNDI": 5,
- *   "MARDI": 3,
- *   "MERCREDI": 7,
- *   "JEUDI": 2,
- *   "VENDREDI": 4,
- *   "SAMEDI": 1,
- *   "DIMANCHE": 0
- * }
  */
-    async getNbGoalPerDay() {
+    async getNbGoalPerDay(userId: number) {
         return await prisma.goal.groupBy({
             by: ['day'],
+            where: { userId },
             _count: {
                 day: true,
             },
@@ -41,10 +29,11 @@ export const goalGraphService = {
      * @brief Fonction pour récupérer le nombre d'objectifs (goals) terminés par jour de la semaine.
      * @returns Un objet contenant le nombre d'objectifs terminés pour chaque jour de la semaine.
      */
-    async getCompletedGoalsPerDay() {
+    async getCompletedGoalsPerDay(userId: number) {
         return await prisma.goal.groupBy({
             by: ['day'],
             where: {
+                userId,
                 completed: true,
             },
             _count: {
@@ -58,10 +47,11 @@ export const goalGraphService = {
      * @param priority La priorité pour laquelle filtrer les objectifs.
      * @returns Un objet contenant le nombre d'objectifs pour chaque jour de la semaine.
      */
-    async getNbGoalPerDayByPriority(priority: string) {
+    async getNbGoalPerDayByPriority(priority: string, userId: number) {
         return await prisma.goal.groupBy({
             by: ['day'],
             where: {
+                userId,
                 priority: priority,
             },
             _count: {
@@ -75,10 +65,11 @@ export const goalGraphService = {
      * @param priority La priorité pour laquelle filtrer les objectifs terminés.
      * @returns Un objet contenant le nombre d'objectifs terminés pour chaque jour de la semaine.
      */
-    async getCompletedGoalsPerDayByPriority(priority: string) {
+    async getCompletedGoalsPerDayByPriority(priority: string, userId: number) {
         return await prisma.goal.groupBy({
             by: ['day'],
             where: {
+                userId,
                 completed: true,
                 priority: priority,
             },

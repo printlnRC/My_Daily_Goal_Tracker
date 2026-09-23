@@ -39,10 +39,20 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
     }
 
     const fetchPriorityData = async () => {
+      const token = localStorage.getItem('daily-goal-token');
+
       try {
         const [resTotals, resCompleted] = await Promise.all([
-          fetch(`http://localhost:5000/api/goals/graph/priority/${priorityFilter}`),
-          fetch(`http://localhost:5000/api/goals/graph/completed/priority/${priorityFilter}`)
+          fetch(`http://localhost:5000/api/goals/graph/priority/${priorityFilter}`, {
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }),
+          fetch(`http://localhost:5000/api/goals/graph/completed/priority/${priorityFilter}`, {
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          })
         ]);
 
         if (!resTotals.ok || !resCompleted.ok) {

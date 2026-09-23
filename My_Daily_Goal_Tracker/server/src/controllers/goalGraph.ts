@@ -10,6 +10,7 @@
 
 import { Request, Response } from 'express';
 import { goalGraphService } from '../services/goalGraph.js';
+import type { AuthRequest } from '../Middlewares/auth.js';
 
 /**
  * @brief Contrôleur pour gérer les graphiques des objectifs (goals) de l'application.
@@ -23,9 +24,12 @@ export const goalGraphController = {
    * @param req - La requête HTTP.
    * @param res - La réponse HTTP.
    */
-  getNbGoalPerDay: async (_req: Request, res: Response) => {
+  getNbGoalPerDay: async (req: AuthRequest, res: Response) => {
     try {
-      const graphData = await goalGraphService.getNbGoalPerDay();
+      if (!req.userId) {
+        return res.status(401).json({ error: 'Utilisateur non authentifié.' });
+      }
+      const graphData = await goalGraphService.getNbGoalPerDay(req.userId);
       res.json(graphData);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe" });
@@ -37,9 +41,12 @@ export const goalGraphController = {
    * @param req - La requête HTTP.
    * @param res - La réponse HTTP.
    */
-  getCompletedGoalsPerDay: async (_req: Request, res: Response) => {
+  getCompletedGoalsPerDay: async (req: AuthRequest, res: Response) => {
     try {
-      const graphData = await goalGraphService.getCompletedGoalsPerDay();
+      if (!req.userId) {
+        return res.status(401).json({ error: 'Utilisateur non authentifié.' });
+      }
+      const graphData = await goalGraphService.getCompletedGoalsPerDay(req.userId);
       res.json(graphData);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe" });
@@ -50,18 +57,21 @@ export const goalGraphController = {
    * @param req - La requête HTTP.
    * @param res - La réponse HTTP.
    */
-  getNbGoalPerDayByPriority: async (req: Request, res: Response) => {
-    const { priority } = req.params;
+  getNbGoalPerDayByPriority: async (req: AuthRequest, res: Response) => {
+    const priority = Array.isArray(req.params.priority) ? req.params.priority[0] : req.params.priority;
     try {
-      let graphData;
-      
-      // Si la priorité est "Tous", on appelle la fonction globale que tu as déjà codée !
-      if (priority === 'Tous') {
-        graphData = await goalGraphService.getNbGoalPerDay();
-      } else {
-        graphData = await goalGraphService.getNbGoalPerDayByPriority(priority);
+      if (!req.userId) {
+        return res.status(401).json({ error: 'Utilisateur non authentifié.' });
       }
-      
+
+      let graphData;
+
+      if (priority === 'Tous') {
+        graphData = await goalGraphService.getNbGoalPerDay(req.userId);
+      } else {
+        graphData = await goalGraphService.getNbGoalPerDayByPriority(priority, req.userId);
+      }
+
       res.json(graphData);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe par priorité" });
@@ -72,18 +82,21 @@ export const goalGraphController = {
    * @param req - La requête HTTP.
    * @param res - La réponse HTTP.
    */
-  getCompletedGoalsPerDayByPriority: async (req: Request, res: Response) => {
-    const { priority } = req.params;
+  getCompletedGoalsPerDayByPriority: async (req: AuthRequest, res: Response) => {
+    const priority = Array.isArray(req.params.priority) ? req.params.priority[0] : req.params.priority;
     try {
-      let graphData;
-      
-      // Même logique : si "Tous", on utilise ton deuxième contrôleur existant
-      if (priority === 'Tous') {
-        graphData = await goalGraphService.getCompletedGoalsPerDay();
-      } else {
-        graphData = await goalGraphService.getCompletedGoalsPerDayByPriority(priority);
+      if (!req.userId) {
+        return res.status(401).json({ error: 'Utilisateur non authentifié.' });
       }
-      
+
+      let graphData;
+
+      if (priority === 'Tous') {
+        graphData = await goalGraphService.getCompletedGoalsPerDay(req.userId);
+      } else {
+        graphData = await goalGraphService.getCompletedGoalsPerDayByPriority(priority, req.userId);
+      }
+
       res.json(graphData);
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la récupération des données du graphe par priorité" });

@@ -10,6 +10,7 @@
 import { Router } from 'express';
 import { goalController } from '../controllers/goalController.js';
 import { goalGraphController } from '../controllers/goalGraph.js';
+import { authenticateToken } from '../Middlewares/auth.js';
 
 const router = Router();
 
@@ -17,48 +18,48 @@ const router = Router();
  * * @brief Route pour créer un nouvel objectif (goal).
  * * @description Cette route reçoit une requête POST avec les données d'un nouvel objectif (texte et priorité) dans le corps de la requête. Elle utilise le contrôleur `goalController.create` pour traiter la création de l'objectif et renvoie l'objet créé en réponse.
  */
-router.post('/', goalController.create);
+router.post('/', authenticateToken, goalController.create);
 
 /**
  * * @brief Route pour récupérer tous les objectifs (goals).
  * * @description Cette route reçoit une requête GET et utilise le contrôleur `goalController.findAll` pour récupérer tous les objectifs et les renvoyer en réponse.
  */
-router.get('/', goalController.findAll);
+router.get('/', authenticateToken, goalController.findAll);
 
 /**
  * * @brief Route pour mettre à jour le statut "completed"
  * * @description Cette route reçoit une requête PATCH avec l'ID d'un objectif dans les paramètres de la route. Elle utilise le contrôleur `goalController.toggle` pour basculer le statut "completed" de l'objectif et renvoie l'objet mis à jour en réponse.
  */
-router.patch('/:id', goalController.toggle);
+router.patch('/:id', authenticateToken, goalController.toggle);
 
 /**
  * * @brief Route pour récupérer les données du graphique.
  * * @description Cette route reçoit une requête GET et utilise le contrôleur `goalGraphController.getGraphData` pour récupérer les données du graphique et les renvoyer en réponse.
  */
-router.get('/graph', goalGraphController.getNbGoalPerDay);
+router.get('/graph', authenticateToken, goalGraphController.getNbGoalPerDay);
 
 /** 
  * @brief Route pour récupérer les données du graphique des objectifs terminés.
  * @description Cette route reçoit une requête GET et utilise le contrôleur `goalGraphController.getCompletedGoalsPerDay` pour récupérer les données du graphique et les renvoyer en réponse.
  */
-router.get('/graph/completed', goalGraphController.getCompletedGoalsPerDay);
+router.get('/graph/completed', authenticateToken, goalGraphController.getCompletedGoalsPerDay);
 
 /**
  * @brief Route pour récupérer les données du graphique des objectifs par priorité.
  * @description Cette route reçoit une requête GET avec la priorité dans les paramètres de la route. Elle utilise le contrôleur `goalGraphController.getNbGoalPerDayByPriority` pour récupérer les données du graphique et les renvoyer en réponse.
  */
-router.get('/graph/priority/:priority', goalGraphController.getNbGoalPerDayByPriority);
+router.get('/graph/priority/:priority', authenticateToken, goalGraphController.getNbGoalPerDayByPriority);
 
 /**
  * @brief Route pour récupérer les données du graphique des objectifs terminés par priorité.
  * @description Cette route reçoit une requête GET avec la priorité dans les paramètres de la route. Elle utilise le contrôleur `goalGraphController.getCompletedGoalsPerDayByPriority` pour récupérer les données du graphique et les renvoyer en réponse.
  */
-router.get('/graph/completed/priority/:priority', goalGraphController.getCompletedGoalsPerDayByPriority);
+router.get('/graph/completed/priority/:priority', authenticateToken, goalGraphController.getCompletedGoalsPerDayByPriority);
 
 /** 
  * @brief Route pour supprimer un objectif.
  * @description Cette route reçoit une requête DELETE avec l'ID d'un objectif dans les paramètres de la route. Elle utilise le contrôleur `goalController.delete` pour supprimer l'objectif et renvoie une réponse de confirmation.
  */
-router.delete('/:id', goalController.delete);
+router.delete('/:id', authenticateToken, goalController.delete);
 
 export default router;
