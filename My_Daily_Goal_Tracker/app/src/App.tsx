@@ -4,6 +4,7 @@ import { Task } from "./types/goalget";
 import { DAYS_MAP } from "./types/goalGrap";
 import GoalGet from "./components/GoalGet";
 import GoalGraph from "./components/GoalGraph";
+import Header from "./components/Header";
 import { toast } from 'sonner';
 import { GoalGraphData } from "./types/goalGrap";
 import { loginSchema } from './lib/schemas';
@@ -241,14 +242,14 @@ function App() {
               <h1 className="text-3xl font-black mt-2">Connexion</h1>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-5">
               <label className="form-control w-full">
                 <span className="label-text mb-2">Email</span>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full focus:outline-none focus:ring-0 focus:border-primary"
                   placeholder="nom@exemple.com"
                   disabled={isSubmitting}
                 />
@@ -260,7 +261,7 @@ function App() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full focus:outline-none focus:ring-0 focus:border-primary"
                   placeholder="••••••••"
                   disabled={isSubmitting}
                 />
@@ -282,15 +283,7 @@ function App() {
 
   return (
     <div className="bg-base-100 min-h-screen px-8">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <h1 className="text-4xl font-black text-primary italic">DAILY GOAL TRACKER</h1>
-          {user && <p className="text-sm text-base-content/70 mt-1">Connecté en tant que {user.email}</p>}
-        </div>
-        <button className="btn btn-outline btn-sm" onClick={handleLogout}>
-          Déconnexion
-        </button>
-      </div>
+      <Header user={user} onLogout={handleLogout} />
 
       <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
         <div className="w-full h-[35vh] flex gap-8">
