@@ -1,3 +1,12 @@
+/**
+ * @file Header.tsx
+ * @description Affiche l’en-tête du site et permet de naviguer entre les objectifs et le compte.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
 import { UserRound } from 'lucide-react';
 
 export type PageNavigation = 'goals' | 'account';

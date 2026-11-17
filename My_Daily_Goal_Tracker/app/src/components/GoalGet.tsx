@@ -1,4 +1,13 @@
 /**
+ * @file GoalGet.tsx
+ * @description Affiche les objectifs par jour et permet de les terminer ou de les supprimer.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
+/**
  * Composant GoalGet : Affiche la liste des objectifs de l'utilisateur
  * Chaque objectif affiche son texte, sa priorité (avec un badge coloré) et une case à cocher pour marquer comme terminé.
  * Lorsque l'utilisateur coche ou décoche la case, une requête PATCH est envoyée au backend pour mettre à jour le statut de l'objectif.

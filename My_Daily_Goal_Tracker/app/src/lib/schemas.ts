@@ -1,3 +1,12 @@
+/**
+ * @file schemas.ts
+ * @description Définit les schémas Zod de validation des formulaires d’authentification et d’objectif.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
 import { z } from 'zod';
 
 export const loginSchema = z.object({

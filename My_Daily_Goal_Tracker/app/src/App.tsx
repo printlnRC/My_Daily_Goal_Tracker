@@ -1,3 +1,12 @@
+/**
+ * @file App.tsx
+ * @description Gère l’authentification, les objectifs et les vues principales de l’application.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
 import { useState, useEffect, type FormEvent } from "react";
 import GoalForm from "./components/GoalForm";
 import { Task } from "./types/goalget";

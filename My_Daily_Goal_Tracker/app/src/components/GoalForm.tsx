@@ -1,12 +1,9 @@
 /**
- * GoalForm.tsx
- * Le composant permet d'ajouter un nouveau GOAL en envoyant une requête POST à l'API.
- * et l'utilisateur reçois un toast de confirmation ou d'erreur selon le résultat de la requête.
- * @author Sam
- * @param onAddGoal - Fonction passée depuis App.tsx pour ajouter le nouvel objectif à la liste affichée
- * @returns Un formulaire avec un champ de texte, une sélection de priorité et un bouton d'ajout
- * @version 1.0
- * @date 2026-03-02
+ * @file GoalForm.tsx
+ * @description Affiche le formulaire de création et de validation d’un objectif.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
  * @license MIT
  */
 

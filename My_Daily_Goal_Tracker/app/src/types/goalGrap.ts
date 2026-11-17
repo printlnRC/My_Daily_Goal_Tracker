@@ -1,3 +1,12 @@
+/**
+ * @file goalGrap.ts
+ * @description Définit les types et correspondances utilisés pour les données du graphique.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
 export interface GoalGraphData {
   day: string;
   qty: number;

@@ -1,3 +1,12 @@
+/**
+ * @file GoalGraph.tsx
+ * @description Affiche le graphique des objectifs par jour et permet de filtrer par priorité.
+ * @author Copilot
+ * @date 2026-11-17
+ * @version 1.0.0
+ * @license MIT
+ */
+
 import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DAYS_MAP } from '../types/goalGrap';
