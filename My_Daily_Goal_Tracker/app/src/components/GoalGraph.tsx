@@ -2,9 +2,18 @@ import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DAYS_MAP } from '../types/goalGrap';
 
+const WEEKDAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
 export default function GoalGraph({ graphData }: { graphData: any[] }) {
   const [priorityFilter, setPriorityFilter] = useState<string>('Tous');
   const [filteredData, setFilteredData] = useState<any[]>(graphData);
+  const today = new Date();
+  const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
+  const weekDates = WEEKDAYS.map((_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return date;
+  });
 
   const buildWeeklyData = (totals: any[], completeds: any[]) => {
     const weeklyData: { [key: string]: { day: string; qty: number; completed: number; order: number } } = {};
@@ -90,7 +99,7 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
 
       <div className="flex-1">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <defs>
               <linearGradient id="colorQty" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#c7d926" stopOpacity={0.4}/>
@@ -103,7 +112,23 @@ export default function GoalGraph({ graphData }: { graphData: any[] }) {
             </defs>
             
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#444" />
-            <XAxis dataKey="day" stroke="#A6ADBB" />
+            <XAxis
+              dataKey="day"
+              stroke="#6B7280"
+              height={58}
+              tickMargin={12}
+              tick={({ x, y, index }) => {
+                const date = weekDates[index];
+                return (
+                  <text x={x} y={y} textAnchor="middle" fill="#374151" fontSize={12} fontWeight={500}>
+                    <tspan x={x} dy="0">{WEEKDAYS[index]}</tspan>
+                    <tspan x={x} dy="18">
+                      {date ? `${date.getDate()}/${String(date.getMonth() + 1).padStart(2, '0')}` : ''}
+                    </tspan>
+                  </text>
+                );
+              }}
+            />
             <YAxis stroke="#A6ADBB" allowDecimals={false} />
             
             <Tooltip 
