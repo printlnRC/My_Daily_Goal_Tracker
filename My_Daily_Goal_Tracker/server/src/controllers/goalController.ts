@@ -17,18 +17,34 @@ export const goalController = {
   create: async (req: AuthRequest, res: Response) => {
     try {
       const userId = req.userId;
-      const { text, priority, day } = req.body;
+      const { text, priority } = req.body;
+      const days = req.body.days ?? (req.body.day ? [req.body.day] : []);
+      const validDays = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'];
+      const validPriorities = ['Sigma', 'Indispensable', 'Cool'];
 
       if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non authentifié.' });
       }
 
-      if (!text) {
-        return res.status(400).json({ error: 'Le texte est obligatoire' });
+      if (typeof text !== 'string' || !text.trim()) {
+        return res.status(400).json({ error: 'Le texte est obligatoire.' });
       }
 
-      const newGoal = await goalService.createGoal(text, priority, day, userId);
-      res.status(201).json(newGoal);
+      if (!validPriorities.includes(priority)) {
+        return res.status(400).json({ error: 'Priorité invalide.' });
+      }
+
+      if (!Array.isArray(days) || days.length === 0 || days.some((day: unknown) => typeof day !== 'string' || !validDays.includes(day))) {
+        return res.status(400).json({ error: 'Sélectionnez au moins un jour valide.' });
+      }
+
+      const newGoals = await goalService.createGoals(
+        text.trim(),
+        priority,
+        [...new Set(days)],
+        userId,
+      );
+      res.status(201).json(newGoals);
     } catch (error) {
       res.status(500).json({ error: 'Erreur lors de la création' });
     }

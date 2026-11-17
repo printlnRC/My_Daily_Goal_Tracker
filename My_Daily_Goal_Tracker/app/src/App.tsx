@@ -130,8 +130,8 @@ function App() {
     void loadGraphData();
   }, [token]);
 
-  const handleAddGoal = (newGoal: Task) => {
-    setGoals((prevGoals) => [newGoal, ...prevGoals]);
+  const handleAddGoal = (newGoals: Task[]) => {
+    setGoals((prevGoals) => [...newGoals, ...prevGoals]);
     void loadGraphData();
   };
 

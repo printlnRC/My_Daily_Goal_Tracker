@@ -15,20 +15,22 @@ export const goalService = {
    * @brief Fonction pour créer un nouvel objectif (goal) dans la base de données.
    * @param text - Le texte de l'objectif.
    * @param priority - La priorité de l'objectif.
-   * @param day - Le jour de la semaine associé à l'objectif (calculé automatiquement).
+   * @param days - Les jours de la semaine associés à l'objectif.
    * @param userId - L'identifiant de l'utilisateur authentifié.
-   * @returns L'objectif créé.
+   * @returns Les objectifs créés, un par jour sélectionné.
    */
-  async createGoal(text: string, priority: string, day: string, userId: number) {
-    return await prisma.goal.create({
-      data: {
-        text,
-        priority,
-        day,
-        completed: false,
-        userId,
-      }
-    });
+  async createGoals(text: string, priority: string, days: string[], userId: number) {
+    return await prisma.$transaction(
+      days.map((day) => prisma.goal.create({
+        data: {
+          text,
+          priority,
+          day,
+          completed: false,
+          userId,
+        },
+      })),
+    );
   },
 
   /**

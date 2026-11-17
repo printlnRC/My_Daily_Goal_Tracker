@@ -16,16 +16,19 @@ import { z } from 'zod';
 import { Task } from '../types/goalget';
 import { goalSchema } from '../lib/schemas';
 
+const DAYS = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'] as const;
+type Day = typeof DAYS[number];
+
 // On s'assure que le nom de la prop correspond à celui utilisé dans App.tsx
-export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => void }) {
+export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoals: Task[]) => void }) {
   const [text, setText] = useState('');
   const [priority, setPriority] = useState('Sigma');
-  const [day, setDay] = useState<'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI' | 'DIMANCHE'>('LUNDI');
+  const [days, setDays] = useState<Day[]>(['LUNDI']);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = goalSchema.safeParse({ text, priority, day });
+    const payload = goalSchema.safeParse({ text, priority, days });
 
     if (!payload.success) {
       toast.error(payload.error.issues[0].message);
@@ -45,13 +48,13 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
       });
 
       if (response.ok) {
-        const newGoal: Task = await response.json(); // On récupère l'objet créé par la base
+        const newGoals: Task[] = await response.json();
         
         // 1. Déclenchement du Toast (succès)
         toast.success("Objectif ajouté au registre, Sigma ! 🗿"); 
         
         setText(''); 
-        onAddGoal(newGoal); // 2. On passe l'objet complet à App.tsx pour l'affichage
+        onAddGoal(newGoals);
       } else {
         toast.error("Le serveur a refusé l'objectif...");
       }
@@ -61,8 +64,14 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
     }
   };
 
+  const toggleDay = (day: Day) => {
+    setDays((selectedDays) => selectedDays.includes(day)
+      ? selectedDays.filter((selectedDay) => selectedDay !== day)
+      : [...selectedDays, day]);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="bg-base-200 p-6 rounded-2xl shadow-lg flex flex-col gap-4 h-full">
+    <form onSubmit={handleSubmit} className="bg-base-200 p-4 rounded-2xl shadow-lg flex flex-col gap-2 h-full">
       <h2 className="text-xl font-bold text-primary text-center">Nouvel Objectif</h2>
       
       <div className="form-control">
@@ -77,7 +86,7 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
 
       <div className="flex gap-2">
         <select 
-          className="select select-bordered flex-1"
+          className="select select-bordered select-sm flex-1"
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
         >
@@ -85,26 +94,28 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoal: Task) => 
           <option value="Indispensable">🔥 Indispensable</option>
           <option value="Cool">😎 Cool</option>
         </select>
-
-        <select
-          className="select select-bordered flex-1"
-          value={day}
-          onChange={(e) => setDay(e.target.value as 'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI' | 'DIMANCHE')}
-        >
-          <option value="LUNDI">LUNDI</option>
-          <option value="MARDI">MARDI</option>
-          <option value="MERCREDI">MERCREDI</option>
-          <option value="JEUDI">JEUDI</option>
-          <option value="VENDREDI">VENDREDI</option>
-          <option value="SAMEDI">SAMEDI</option>
-          <option value="DIMANCHE">DIMANCHE</option>
-        </select>
-
-
-        <button type="submit" className="btn btn-primary px-8 shadow-md">
-          Ajouter
-        </button>
       </div>
+
+      <fieldset className="min-h-0">
+        <legend className="label-text mb-1">Jours</legend>
+        <div className="grid grid-cols-4 gap-1">
+          {DAYS.map((day) => (
+            <label key={day} className="flex cursor-pointer items-center gap-1 text-xs">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary checkbox-xs"
+                checked={days.includes(day)}
+                onChange={() => toggleDay(day)}
+              />
+              <span>{day.slice(0, 3)}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <button type="submit" className="btn btn-primary btn-sm mt-auto shadow-md">
+        Ajouter
+      </button>
     </form>
   );
 }

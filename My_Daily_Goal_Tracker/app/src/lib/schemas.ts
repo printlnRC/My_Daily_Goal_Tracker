@@ -10,7 +10,6 @@ export const goalSchema = z.object({
   priority: z.enum(['Sigma', 'Indispensable', 'Cool'], {
     errorMap: () => ({ message: 'Priorité invalide' }),
   }),
-  day: z.enum(['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'], {
-    errorMap: () => ({ message: 'Jour invalide' }),
-  }),
+  days: z.array(z.enum(['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE']))
+    .min(1, 'Sélectionne au moins un jour'),
 });
