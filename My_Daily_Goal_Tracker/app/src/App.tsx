@@ -4,7 +4,7 @@ import { Task } from "./types/goalget";
 import { DAYS_MAP } from "./types/goalGrap";
 import GoalGet from "./components/GoalGet";
 import GoalGraph from "./components/GoalGraph";
-import Header from "./components/Header";
+import SiteHeader, { type PageNavigation } from "./components/Header";
 import { toast } from 'sonner';
 import { GoalGraphData } from "./types/goalGrap";
 import { loginSchema } from './lib/schemas';
@@ -17,6 +17,7 @@ type AuthUser = {
 };
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<PageNavigation>('goals');
   const [goals, setGoals] = useState<Task[]>([]);
   const [graphData, setGraphData] = useState<GoalGraphData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -283,29 +284,51 @@ function App() {
 
   return (
     <div className="bg-base-100 min-h-screen px-8">
-      <Header user={user} onLogout={handleLogout} />
+      <SiteHeader
+        user={user}
+        onLogout={handleLogout}
+        onNavigate={setCurrentPage}
+      />
 
-      <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
-        <div className="w-full h-[35vh] flex gap-8">
-          <div className="flex-2 h-full">
-            {loading ? (
-              <div className="bg-base-300 h-full rounded-2xl flex items-center justify-center animate-pulse">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-              </div>
-            ) : (
-              <GoalGraph graphData={graphData} />
-            )}
+      {currentPage === 'account' ? (
+        <main className="mx-auto w-full max-w-2xl">
+          <section className="card border border-base-300 bg-base-200 shadow-lg">
+            <div className="card-body">
+              <h2 className="card-title text-primary">Mon compte</h2>
+              <p>Adresse email : {user?.email}</p>
+              <button
+                type="button"
+                className="btn btn-primary mt-4 self-start"
+                onClick={() => setCurrentPage('goals')}
+              >
+                Retour à mes objectifs
+              </button>
+            </div>
+          </section>
+        </main>
+      ) : (
+        <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
+          <div className="w-full h-[35vh] flex gap-8">
+            <div className="flex-2 h-full">
+              {loading ? (
+                <div className="bg-base-300 h-full rounded-2xl flex items-center justify-center animate-pulse">
+                  <span className="loading loading-spinner loading-lg text-primary"></span>
+                </div>
+              ) : (
+                <GoalGraph graphData={graphData} />
+              )}
+            </div>
+
+            <div className="w-96 h-full">
+              <GoalForm onAddGoal={handleAddGoal} />
+            </div>
           </div>
 
-          <div className="w-96 h-full">
-            <GoalForm onAddGoal={handleAddGoal} />
+          <div className="w-full h-[50vh]">
+            <GoalGet goals={goals} onToggle={handleToggleGoal} onDelete={handleDeleteGoal} />
           </div>
         </div>
-
-        <div className="w-full h-[50vh]">
-          <GoalGet goals={goals} onToggle={handleToggleGoal} onDelete={handleDeleteGoal} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }

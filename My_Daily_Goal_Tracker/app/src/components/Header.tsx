@@ -1,17 +1,24 @@
 import { UserRound } from 'lucide-react';
 
-type HeaderProps = {
-  user: {
-    email: string;
-  } | null;
+export type PageNavigation = 'goals' | 'account';
+
+type SiteHeaderProps = {
+  onNavigate: (page: PageNavigation) => void;
+  user: { id: number; email: string } | null;
   onLogout: () => void;
 };
 
-function Header({ user, onLogout }: HeaderProps) {
+export default function SiteHeader({ onNavigate, user, onLogout }: SiteHeaderProps) {
   return (
     <header className="mb-3 flex items-center justify-between gap-4">
       <div>
-        <h1 className="text-4xl font-black italic text-primary">DAILY GOAL TRACKER</h1>
+        <button
+          type="button"
+          className="text-left text-4xl font-black italic text-primary"
+          onClick={() => onNavigate('goals')}
+        >
+          DAILY GOAL TRACKER
+        </button>
         {user && (
           <p className="mt-1 text-sm text-base-content/70">
             Connecté en tant que {user.email}
@@ -28,10 +35,34 @@ function Header({ user, onLogout }: HeaderProps) {
         </summary>
         <ul className="menu dropdown-content z-50 mt-2 w-52 rounded-box bg-base-100 p-2 shadow-lg">
           {user && (
-            <li className="menu-title">
-              <span className="break-all">{user.email}</span>
-            </li>
+            <>
+              <li className="menu-title">
+                <span className="break-all">{user.email}</span>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.currentTarget.closest('details')?.removeAttribute('open');
+                    onNavigate('account');
+                  }}
+                >
+                  Mon compte
+                </button>
+              </li>
+            </>
           )}
+          <li>
+            <button
+              type="button"
+              onClick={(event) => {
+                event.currentTarget.closest('details')?.removeAttribute('open');
+                onNavigate('goals');
+              }}
+            >
+              Mes objectifs
+            </button>
+          </li>
           <li>
             <button type="button" onClick={onLogout}>
               Déconnexion
@@ -42,5 +73,3 @@ function Header({ user, onLogout }: HeaderProps) {
     </header>
   );
 }
-
-export default Header;
