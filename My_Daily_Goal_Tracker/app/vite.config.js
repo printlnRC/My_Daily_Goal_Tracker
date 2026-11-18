@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -12,6 +13,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    proxy: {
+      '/api': {
+        target: process.env.API_PROXY_TARGET || 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
     watch: {
       usePolling: true,
       interval: 100,

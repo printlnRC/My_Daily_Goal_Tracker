@@ -32,15 +32,11 @@ export default function GoalForm({ onAddGoal }: { onAddGoal: (newGoals: Task[]) 
       return;
     }
 
-    const token = localStorage.getItem('daily-goal-token');
-
     try {
-      const response = await fetch('http://localhost:5000/api/goals', {
+      const response = await fetch('/api/goals', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload.data),
       });
 

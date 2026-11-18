@@ -9,6 +9,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import GoalForm from "./components/GoalForm";
+import AccountPage from "./components/AccountPage";
 import { Task } from "./types/goalget";
 import { DAYS_MAP } from "./types/goalGrap";
 import GoalGet from "./components/GoalGet";
@@ -18,7 +19,7 @@ import { toast } from 'sonner';
 import { GoalGraphData } from "./types/goalGrap";
 import { loginSchema } from './lib/schemas';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = '/api';
 
 type AuthUser = {
   id: number;
@@ -30,44 +31,91 @@ function App() {
   const [goals, setGoals] = useState<Task[]>([]);
   const [graphData, setGraphData] = useState<GoalGraphData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('daily-goal-token'));
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const rawUser = localStorage.getItem('daily-goal-user');
-    return rawUser ? JSON.parse(rawUser) : null;
-  });
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isAuthenticated = Boolean(token);
-
-  const getAuthHeaders = (extraHeaders: Record<string, string> = {}) => ({
-    ...extraHeaders,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  });
+  const isAuthenticated = Boolean(user);
 
   const handleLogout = () => {
     localStorage.removeItem('daily-goal-token');
     localStorage.removeItem('daily-goal-user');
-    setToken(null);
     setUser(null);
+    setGoals([]);
+    setGraphData([]);
+    setCurrentPage('goals');
     setEmail('');
     setPassword('');
     setLoginError('');
+
+    void fetch(`${API_BASE}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Le serveur n’a pas pu fermer la session.');
+      }
+    }).catch((error: unknown) => {
+      console.error('Erreur lors de la déconnexion :', error);
+      toast.error('Impossible de fermer la session sur le serveur.');
+    });
   };
 
+  useEffect(() => {
+    let isActive = true;
+    localStorage.removeItem('daily-goal-token');
+    localStorage.removeItem('daily-goal-user');
+
+    const restoreSession = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/auth/me`, {
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data: { user: AuthUser } = await response.json();
+          if (isActive) setUser(data.user);
+        } else if (response.status !== 401 && response.status !== 403) {
+          throw new Error(
+            `L’API a répondu avec le statut ${response.status}. Vérifie que le serveur fonctionne dans le dossier server.`,
+          );
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification de la session :', error);
+        if (isActive) {
+          toast.error(
+            error instanceof TypeError
+              ? 'API injoignable. Démarre le serveur avec « npm run dev » dans le dossier server.'
+              : error instanceof Error
+                ? error.message
+                : 'Impossible de vérifier la session auprès du serveur.',
+          );
+        }
+      } finally {
+        if (isActive) setIsCheckingSession(false);
+      }
+    };
+
+    void restoreSession();
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   const loadGraphData = async () => {
-    if (!token) return;
+    if (!user) return;
 
     try {
       setLoading(true);
       const [resTotal, resCompleted] = await Promise.all([
-        fetch(`${API_BASE}/api/goals/graph`, {
-          headers: getAuthHeaders(),
+        fetch(`${API_BASE}/goals/graph`, {
+          credentials: 'include',
         }),
-        fetch(`${API_BASE}/api/goals/graph/completed`, {
-          headers: getAuthHeaders(),
+        fetch(`${API_BASE}/goals/graph/completed`, {
+          credentials: 'include',
         }),
       ]);
 
@@ -113,12 +161,12 @@ function App() {
   };
 
   useEffect(() => {
-    if (!token) return;
+    if (!user) return;
 
     const loadGoals = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/goals`, {
-          headers: getAuthHeaders(),
+        const response = await fetch(`${API_BASE}/goals`, {
+          credentials: 'include',
         });
 
         if (response.status === 401 || response.status === 403) {
@@ -138,7 +186,7 @@ function App() {
 
     void loadGoals();
     void loadGraphData();
-  }, [token]);
+  }, [user]);
 
   const handleAddGoal = (newGoals: Task[]) => {
     setGoals((prevGoals) => [...newGoals, ...prevGoals]);
@@ -146,12 +194,13 @@ function App() {
   };
 
   const handleToggleGoal = async (id: number, completed: boolean) => {
-    if (!token) return;
+    if (!user) return;
 
     try {
-      const response = await fetch(`${API_BASE}/api/goals/${id}`, {
+      const response = await fetch(`${API_BASE}/goals/${id}`, {
         method: 'PATCH',
-        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ completed }),
       });
 
@@ -177,12 +226,12 @@ function App() {
   };
 
   const handleDeleteGoal = async (id: number) => {
-    if (!token) return;
+    if (!user) return;
 
     try {
-      const response = await fetch(`${API_BASE}/api/goals/${id}`, {
+      const response = await fetch(`${API_BASE}/goals/${id}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        credentials: 'include',
       });
 
       if (response.status === 401 || response.status === 403) {
@@ -217,30 +266,51 @@ function App() {
       setIsSubmitting(true);
       setLoginError('');
 
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(parsed.data),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Identifiants invalides.');
+        const contentType = response.headers.get('content-type') ?? '';
+        const errorData: { error?: string } = contentType.includes('application/json')
+          ? await response.json()
+          : {};
+        throw new Error(
+          errorData.error
+            || `Erreur API (HTTP ${response.status}). Vérifie le terminal du serveur.`,
+        );
       }
 
-      localStorage.setItem('daily-goal-token', data.token);
-      localStorage.setItem('daily-goal-user', JSON.stringify(data.user));
-      setToken(data.token);
+      const data: { user: AuthUser } = await response.json();
       setUser(data.user);
       setEmail('');
       setPassword('');
     } catch (error: any) {
-      setLoginError(error.message || 'Erreur lors de la connexion.');
+      setLoginError(
+        error instanceof TypeError
+          ? 'API injoignable. Démarre le serveur avec « npm run dev » dans le dossier server.'
+          : error.message || 'Erreur lors de la connexion.',
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const completedGoalCount = goals.filter((goal) => goal.completed).length;
+
+  if (isCheckingSession) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-base-200">
+        <span
+          className="loading loading-spinner loading-lg text-primary"
+          aria-label="Vérification de la session"
+        />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
@@ -300,21 +370,12 @@ function App() {
       />
 
       {currentPage === 'account' ? (
-        <main className="mx-auto w-full max-w-2xl">
-          <section className="card border border-base-300 bg-base-200 shadow-lg">
-            <div className="card-body">
-              <h2 className="card-title text-primary">Mon compte</h2>
-              <p>Adresse email : {user?.email}</p>
-              <button
-                type="button"
-                className="btn btn-primary mt-4 self-start"
-                onClick={() => setCurrentPage('goals')}
-              >
-                Retour à mes objectifs
-              </button>
-            </div>
-          </section>
-        </main>
+        <AccountPage
+          email={user?.email}
+          goalCount={goals.length}
+          completedGoalCount={completedGoalCount}
+          onBack={() => setCurrentPage('goals')}
+        />
       ) : (
         <div className="flex flex-col w-full gap-8 w-[75vw] mx-auto">
           <div className="w-full h-[35vh] flex gap-8">

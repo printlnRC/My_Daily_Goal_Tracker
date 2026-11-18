@@ -5,11 +5,26 @@ import express from 'express';
 import cors from 'cors';
 import goalRoutes from './routes/goalRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import { getJwtSecret } from './lib/auth.js';
 
 const app = express();
 const PORT = 5000;
+const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
-app.use(cors());
+try {
+  getJwtSecret();
+  if (process.env.NODE_ENV === 'production' && !process.env.CLIENT_ORIGIN) {
+    throw new Error('CLIENT_ORIGIN must be configured in production.');
+  }
+  if (process.env.NODE_ENV === 'production' && !clientOrigin.startsWith('https://')) {
+    throw new Error('CLIENT_ORIGIN must use HTTPS in production.');
+  }
+} catch (error) {
+  console.error(error instanceof Error ? error.message : 'Invalid server configuration.');
+  process.exit(1);
+}
+
+app.use(cors({ origin: clientOrigin, credentials: true }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
