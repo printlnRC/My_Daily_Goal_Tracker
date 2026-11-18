@@ -1,5 +1,5 @@
 /** 
- * @file goalGraph.ts
+ * @file goalGraph.controller.ts
  * @description Contrôleur pour gérer les graphiques des objectifs (goals) de l'application.
  * Il contient les fonctions pour récupérer les données nécessaires à la génération des graphiques.
  * @version 1.0
@@ -9,8 +9,8 @@
  */
 
 import { Request, Response } from 'express';
-import { goalGraphService } from '../services/goalGraph.js';
-import type { AuthRequest } from '../Middlewares/auth.js';
+import { goalGraphService } from '../services/goalGraph.service.js';
+import type { AuthRequest } from '../middlewares/auth.middleware.js';
 
 /**
  * @brief Contrôleur pour gérer les graphiques des objectifs (goals) de l'application.

@@ -3,8 +3,8 @@ dotenv.config(); // DOIT ÊTRE ICI
 
 import express from 'express';
 import cors from 'cors';
-import goalRoutes from './routes/goalRoutes.js';
-import authRoutes from './routes/authRoutes.js';
+import goalRoutes from './routes/goal.routes.js';
+import authRoutes from './routes/auth.routes.js';
 import { getJwtSecret } from './lib/auth.js';
 
 const app = express();

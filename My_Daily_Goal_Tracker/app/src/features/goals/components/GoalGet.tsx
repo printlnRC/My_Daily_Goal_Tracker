@@ -2,35 +2,32 @@
  * @file GoalGet.tsx
  * @description Affiche les objectifs par jour et permet de les terminer ou de les supprimer.
  * @author Copilot
- * @date 2026-11-17
+ * @date 2026-11-18
  * @version 1.0.0
  * @license MIT
  */
 
-/**
- * Composant GoalGet : Affiche la liste des objectifs de l'utilisateur
- * Chaque objectif affiche son texte, sa priorité (avec un badge coloré) et une case à cocher pour marquer comme terminé.
- * Lorsque l'utilisateur coche ou décoche la case, une requête PATCH est envoyée au backend pour mettre à jour le statut de l'objectif.
- */
-import { Task } from "../types/goalget";
-import React, { useState, useEffect } from "react";
-import { DAYS_MAP } from "../types/goalGrap";
+import { useEffect, useState } from 'react';
+import PriorityBadge from '../../../components/ui/PriorityBadge';
+import type { Goal } from '../types/goal.types';
 
 interface GoalGetProps {
-  goals: Task[];
-  onToggle: (id: number, completed: boolean) => void;
-  onDelete: (id: number) => void;
+  goals: Goal[];
+  onToggle: (id: number, completed: boolean) => Promise<unknown>;
+  onDelete: (id: number) => Promise<void>;
 }
+
+const DAYS_ORDER = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'] as const;
 
 export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
   const [openId, setOpenId] = useState<number | null>(null);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpenId(null);
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpenId(null);
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   if (goals.length === 0) {
@@ -41,49 +38,37 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
     );
   }
 
-  const DAYS_ORDER = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'];
-
-  const grouped: Record<string, Task[]> = {};
-  DAYS_ORDER.forEach(d => (grouped[d] = []));
-  goals.forEach(g => {
-    const day = g.day || 'LUNDI';
-    if (!grouped[day]) grouped[day] = [];
-    grouped[day].push(g);
+  const grouped: Record<string, Goal[]> = {};
+  DAYS_ORDER.forEach((day) => { grouped[day] = []; });
+  goals.forEach((goal) => {
+    if (!grouped[goal.day]) grouped[goal.day] = [];
+    grouped[goal.day].push(goal);
   });
 
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  const capitalize = (day: string) => day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
 
   return (
     <div className="bg-base-200 p-6 rounded-2xl shadow-lg h-full flex flex-col">
-      <h2 className="text-xl font-bold text-primary text-center mb-4 shrink-0">
-        Mes Objectifs
-      </h2>
+      <h2 className="text-xl font-bold text-primary text-center mb-4 shrink-0">Mes Objectifs</h2>
       <div className="overflow-x-auto flex-1">
         <table className="table table-compact w-full table-fixed">
-
           <thead className="sticky top-0 z-20 bg-base-200">
             <tr>
-              {DAYS_ORDER.map((d) => (
-                <th key={d} className="text-center bg-base-200 py-3">
-                  {capitalize(d)}
-                </th>
+              {DAYS_ORDER.map((day) => (
+                <th key={day} className="text-center bg-base-200 py-3">{capitalize(day)}</th>
               ))}
             </tr>
           </thead>
-
           <tbody>
             <tr>
-              {DAYS_ORDER.map((d) => (
-                <td key={d} className="align-top p-2">
+              {DAYS_ORDER.map((day) => (
+                <td key={day} className="align-top p-2">
                   <div className="flex flex-col gap-3 max-h-[38vh] overflow-y-auto pr-1">
-                    {(grouped[d] || []).length === 0 ? (
-                      <div className="text-sm text-gray-400 italic text-center py-2">
-                        Aucun
-                      </div>
+                    {(grouped[day] || []).length === 0 ? (
+                      <div className="text-sm text-gray-400 italic text-center py-2">Aucun</div>
                     ) : (
-                      (grouped[d] || []).map((goal) => {
+                      grouped[day].map((goal) => {
                         const isOpen = openId === goal.id;
-
                         return (
                           <div
                             key={goal.id}
@@ -91,8 +76,8 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
                             onClick={() => setOpenId(isOpen ? null : goal.id)}
                             role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') setOpenId(isOpen ? null : goal.id);
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ' ') setOpenId(isOpen ? null : goal.id);
                             }}
                           >
                             <div className="flex items-start justify-between gap-2">
@@ -101,41 +86,40 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
                                 <div className="text-xs text-gray-400">
                                   {new Date(goal.createdAt).toLocaleDateString()}
                                 </div>
-                                <div className={`badge badge-sm ${goal.priority === 'Sigma' ? 'badge-primary' : goal.priority === 'Indispensable' ? 'badge-error' : 'badge-ghost'}`}>
-                                  {goal.priority}
-                                </div>
+                                <PriorityBadge priority={goal.priority} />
                               </div>
-
                               <div className="flex flex-col items-end gap-2">
                                 <input
                                   type="checkbox"
                                   checked={goal.completed}
                                   className="checkbox checkbox-md checkbox-primary"
-                                  onClick={(e) => e.stopPropagation()}
-                                  onChange={() => onToggle(goal.id, !goal.completed)}
+                                  onClick={(event) => event.stopPropagation()}
+                                  onChange={() => {
+                                    void onToggle(goal.id, !goal.completed).catch((error: unknown) => {
+                                      console.error('Erreur lors de la mise à jour de l’objectif :', error);
+                                    });
+                                  }}
                                 />
                               </div>
                             </div>
-
-                            {/* Menu d'actions */}
                             <div
-                              className={`absolute left-0 top-full mt-2 w-full bg-base-100 rounded-lg shadow-lg z-30 transform transition duration-200 ease-out origin-top-right ${isOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-2 scale-95 pointer-events-none"}`}
+                              className={`absolute left-0 top-full mt-2 w-full bg-base-100 rounded-lg shadow-lg z-30 transform transition duration-200 ease-out origin-top-right ${isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'}`}
                               aria-hidden={!isOpen}
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(event) => event.stopPropagation()}
                             >
                               <div className="flex flex-row justify-between items-center gap-2 p-2 w-full rounded-2xl shadow-md">
                                 <button
                                   className="flex-1 relative overflow-hidden text-red-500 font-medium bg-transparent px-4 py-2 rounded-xl transition-all duration-300 ease-in-out hover:text-white hover:bg-red-600 active:scale-95 whitespace-nowrap"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDelete(goal.id);
+                                  onClick={() => {
+                                    void onDelete(goal.id).catch((error: unknown) => {
+                                      console.error('Erreur lors de la suppression de l’objectif :', error);
+                                    });
                                   }}
                                 >
                                   Supprimer
                                 </button>
                               </div>
                             </div>
-
                           </div>
                         );
                       })
@@ -145,7 +129,6 @@ export default function GoalGet({ goals, onToggle, onDelete }: GoalGetProps) {
               ))}
             </tr>
           </tbody>
-
         </table>
       </div>
     </div>

@@ -1,5 +1,5 @@
 /** 
- * @file goalRoutes.ts
+ * @file goal.routes.ts
  * @description Routes pour gérer les objectifs (goals) de l'application.
  * @version 1.0
  * @author Sooz (Sam)
@@ -8,9 +8,9 @@
  */
 
 import { Router } from 'express';
-import { goalController } from '../controllers/goalController.js';
-import { goalGraphController } from '../controllers/goalGraph.js';
-import { authenticateToken } from '../Middlewares/auth.js';
+import { goalController } from '../controllers/goal.controller.js';
+import { goalGraphController } from '../controllers/goalGraph.controller.js';
+import { authenticateToken } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 

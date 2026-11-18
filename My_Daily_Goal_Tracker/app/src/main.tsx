@@ -13,7 +13,12 @@ import { Toaster } from 'sonner'
 import './index.css'
 import App from './App.tsx'
 
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root')
+if (!rootElement) {
+  throw new Error('Élément racine introuvable dans index.html.')
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <App />
     <Toaster position="top-center" richColors />

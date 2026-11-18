@@ -1,5 +1,5 @@
 /** 
- * @file goalService.ts
+ * @file goal.service.ts
  * @description Service pour gérer les objectifs (goals) de l'application.
  * Il contient les fonctions pour créer un objectif, récupérer tous les objectifs et basculer le statut d'un objectif.
  * @version 1.0

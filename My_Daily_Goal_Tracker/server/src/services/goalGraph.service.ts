@@ -1,5 +1,5 @@
 /** 
- * @file goalGraph.ts
+ * @file goalGraph.service.ts
  * @description Service pour gérer les graphiques des objectifs (goals) de l'application.
  * Il contient les fonctions pour récupérer les données nécessaires à la génération des graphiques.
  * @version 1.0
@@ -79,4 +79,3 @@ export const goalGraphService = {
         });
     }
 }
-

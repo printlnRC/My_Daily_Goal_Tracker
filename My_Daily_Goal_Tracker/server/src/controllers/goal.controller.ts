@@ -1,5 +1,5 @@
 /** 
- * @file goalController.ts
+ * @file goal.controller.ts
  * @description Contrôleur pour gérer les objectifs (goals) de l'application.
  * Il contient les fonctions pour créer un objectif, récupérer tous les objectifs et basculer le statut d'un objectif.
  * Ces fonctions sont utilisées dans les routes correspondantes pour traiter les requêtes HTTP.
@@ -10,8 +10,8 @@
 */
 
 import { Request, Response } from 'express';
-import { goalService } from '../services/goalGet.js';
-import type { AuthRequest } from '../Middlewares/auth.js';
+import { goalService } from '../services/goal.service.js';
+import type { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const goalController = {
   create: async (req: AuthRequest, res: Response) => {

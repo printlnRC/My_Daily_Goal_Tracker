@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma.js';
-import type { AuthRequest } from '../Middlewares/auth.js';
+import type { AuthRequest } from '../middlewares/auth.middleware.js';
 import { AUTH_COOKIE_NAME, clearAuthCookie, getAuthCookieOptions, getJwtSecret } from '../lib/auth.js';
 
 export const authController = {

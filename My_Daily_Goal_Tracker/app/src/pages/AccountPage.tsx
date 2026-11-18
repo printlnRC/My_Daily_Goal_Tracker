@@ -1,14 +1,14 @@
 /**
  * @file AccountPage.tsx
- * @description Affiche les informations du compte et les statistiques des objectifs de l’utilisateur.
+ * @description Affiche les informations du compte et les statistiques des objectifs.
  * @author Copilot
- * @date 2026-11-17
+ * @date 2026-11-18
  * @version 1.0.0
  * @license MIT
  */
 
 type AccountPageProps = {
-  email: string | undefined;
+  email: string;
   goalCount: number;
   completedGoalCount: number;
   onBack: () => void;
@@ -36,11 +36,7 @@ export default function AccountPage({
               <div className="stat-value text-success">{completedGoalCount}</div>
             </div>
           </div>
-          <button
-            type="button"
-            className="btn btn-primary mt-4 self-start"
-            onClick={onBack}
-          >
+          <button type="button" className="btn btn-primary mt-4 self-start" onClick={onBack}>
             Retour à mes objectifs
           </button>
         </div>
