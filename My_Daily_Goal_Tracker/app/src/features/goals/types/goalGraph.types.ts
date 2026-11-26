@@ -1,7 +1,7 @@
 /**
  * @file goalGraph.types.ts
  * @description Déclare les types des données utilisées par le graphique des objectifs.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

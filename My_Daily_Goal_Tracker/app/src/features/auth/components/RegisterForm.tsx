@@ -1,7 +1,7 @@
 /**
  * @file RegisterForm.tsx
  * @description Affiche le formulaire de création de compte et valide ses champs.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

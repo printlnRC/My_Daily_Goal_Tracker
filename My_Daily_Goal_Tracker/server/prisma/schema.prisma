@@ -7,22 +7,62 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String   // Mot de passe haché avec bcrypt
-  goals     Goal[]
-  createdAt DateTime @default(now())
+  id          Int              @id @default(autoincrement())
+  email       String           @unique
+  password    String
+  goals       Goal[]
+  goalWeeks   GoalOccurrence[]
+  badgeAwards BadgeAward[]
+  createdAt   DateTime         @default(now())
 }
 
 model Goal {
+  id          Int              @id @default(autoincrement())
+  text        String
+  priority    String
+  day         String
+  completed   Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  userId      Int
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occurrences GoalOccurrence[]
+}
+
+model GoalOccurrence {
   id        Int      @id @default(autoincrement())
+  userId    Int
+  goalId    Int?
+  weekStart DateTime @db.Date
   text      String
   priority  String
   day       String
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
-  
-  // Relation avec l'utilisateur
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal Goal? @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, goalId, weekStart])
+  @@index([userId, weekStart])
+}
+
+model Badge {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  threshold Int
+  awards    BadgeAward[]
+}
+
+model BadgeAward {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  badgeId    Int
+  weekStart  DateTime @db.Date
+  obtainedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+  @@index([userId, badgeId])
 }

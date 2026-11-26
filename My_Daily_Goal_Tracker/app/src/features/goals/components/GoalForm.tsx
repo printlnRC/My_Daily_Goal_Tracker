@@ -1,7 +1,7 @@
 /**
  * @file GoalForm.tsx
  * @description Affiche le formulaire de création et de validation d’un objectif.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

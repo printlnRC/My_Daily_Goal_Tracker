@@ -1,73 +1,106 @@
-/** 
+/**
  * @file goal.service.ts
- * @description Service pour gérer les objectifs (goals) de l'application.
- * Il contient les fonctions pour créer un objectif, récupérer tous les objectifs et basculer le statut d'un objectif.
+ * @description Gère les objectifs et leur progression hebdomadaire en base de données.
  * @version 1.0
- * @author Sooz (Sam)
- * @date 2026-03-02
+ * @author Sooz (Sam) et Copilot
+ * @date 2026-11-26
  * @license MIT
  */
 
 import prisma from '../lib/prisma.js';
+import { getParisWeekStart } from '../lib/week.js';
+import { ensureGoalOccurrencesForWeek } from './goalOccurrence.service.js';
+
+export class GoalNotFoundError extends Error {
+  constructor() {
+    super('Objectif non trouvé.');
+    this.name = 'GoalNotFoundError';
+  }
+}
 
 export const goalService = {
-  /**
-   * @brief Fonction pour créer un nouvel objectif (goal) dans la base de données.
-   * @param text - Le texte de l'objectif.
-   * @param priority - La priorité de l'objectif.
-   * @param days - Les jours de la semaine associés à l'objectif.
-   * @param userId - L'identifiant de l'utilisateur authentifié.
-   * @returns Les objectifs créés, un par jour sélectionné.
-   */
   async createGoals(text: string, priority: string, days: string[], userId: number) {
-    return await prisma.$transaction(
-      days.map((day) => prisma.goal.create({
-        data: {
-          text,
-          priority,
-          day,
-          completed: false,
+    const weekStart = getParisWeekStart();
+
+    return prisma.$transaction(async (transaction) => {
+      const goals = await Promise.all(days.map((day) => transaction.goal.create({
+        data: { text, priority, day, userId, completed: false },
+      })));
+
+      await transaction.goalOccurrence.createMany({
+        data: goals.map((goal) => ({
           userId,
-        },
-      })),
-    );
+          goalId: goal.id,
+          weekStart,
+          text: goal.text,
+          priority: goal.priority,
+          day: goal.day,
+        })),
+      });
+
+      return goals.map((goal) => ({ ...goal, completed: false }));
+    });
   },
 
-  /**
-   * @brief Fonction pour récupérer tous les objectifs (goals) d'un utilisateur.
-   * @param userId - L'identifiant de l'utilisateur authentifié.
-   * @returns Un tableau contenant tous les objectifs.
-   */
   async getAllGoals(userId: number) {
-    return await prisma.goal.findMany({
+    const weekStart = getParisWeekStart();
+    await ensureGoalOccurrencesForWeek(userId, weekStart);
+
+    const goals = await prisma.goal.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
+    if (goals.length === 0) return [];
+
+    const occurrences = await prisma.goalOccurrence.findMany({
+      where: {
+        userId,
+        weekStart,
+        goalId: { in: goals.map((goal) => goal.id) },
+      },
+      select: { goalId: true, completed: true },
+    });
+    const completedByGoalId = new Map(
+      occurrences.map((occurrence) => [occurrence.goalId, occurrence.completed]),
+    );
+
+    return goals.map((goal) => ({
+      ...goal,
+      completed: completedByGoalId.get(goal.id) ?? false,
+    }));
   },
 
-  /**
-   * @brief Fonction pour basculer le statut d'un objectif (goal) entre complété et non complété.
-   * @param id - L'identifiant de l'objectif à basculer.
-   * @param completed - Le nouveau statut de complétion de l'objectif (true pour complété, false pour non complété).
-   * @param userId - L'identifiant de l'utilisateur authentifié.
-   * @returns L'objectif mis à jour avec le nouveau statut de complétion.
-   */
   async toggleGoal(id: number, completed: boolean, userId: number) {
-    return await prisma.goal.update({
-      where: { id, userId },
-      data: { completed },
+    const weekStart = getParisWeekStart();
+
+    return prisma.$transaction(async (transaction) => {
+      const goal = await transaction.goal.findFirst({ where: { id, userId } });
+      if (!goal) throw new GoalNotFoundError();
+
+      await ensureGoalOccurrencesForWeek(userId, weekStart, transaction);
+      await transaction.goalOccurrence.update({
+        where: {
+          userId_goalId_weekStart: { userId, goalId: id, weekStart },
+        },
+        data: { completed },
+      });
+
+      return transaction.goal.update({
+        where: { id },
+        data: { completed },
+      });
     });
   },
 
-  /**
-   * @brief Fonction pour supprimer un objectif (goal) de la base de données.
-   * @param id - L'identifiant de l'objectif à supprimer.
-   * @param userId - L'identifiant de l'utilisateur authentifié.
-   * @returns L'objectif supprimé ou null si l'objectif n'existe pas.
-   */
   async deleteGoal(id: number, userId: number) {
-    return await prisma.goal.delete({
-      where: { id, userId },
+    const weekStart = getParisWeekStart();
+
+    return prisma.$transaction(async (transaction) => {
+      await ensureGoalOccurrencesForWeek(userId, weekStart, transaction);
+      const goal = await transaction.goal.findFirst({ where: { id, userId } });
+      if (!goal) throw new GoalNotFoundError();
+
+      return transaction.goal.delete({ where: { id } });
     });
-  }
+  },
 };

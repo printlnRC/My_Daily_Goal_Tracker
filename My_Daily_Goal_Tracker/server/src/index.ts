@@ -6,6 +6,8 @@ import cors from 'cors';
 import goalRoutes from './routes/goal.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import { getJwtSecret } from './lib/auth.js';
+import badgeRoutes from './routes/badge.routes.js';
+import { startBadgeScheduler } from './lib/badgeScheduler.js';
 
 const app = express();
 const PORT = 5000;
@@ -29,6 +31,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/goals', goalRoutes);
+app.use('/api/badges', badgeRoutes);
 
 app.get('/', (req, res) => {
   res.send('Le serveur de Goal Tracker est en ligne ! 🚀');
@@ -36,4 +39,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  startBadgeScheduler();
 });

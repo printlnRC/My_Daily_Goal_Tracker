@@ -1,3 +1,13 @@
+/**
+ * @file auth.controller.ts
+ * @description Contrôleur pour gérer l'authentification des utilisateurs.
+ * Il contient les fonctions pour l'inscription, la connexion, la récupération des informations de l'utilisateur connecté et la déconnexion.
+ * @version 1.0
+ * @author Sooz (Sam) et Copilot
+ * @date 2026-11-26
+ * @license MIT
+ */
+
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';

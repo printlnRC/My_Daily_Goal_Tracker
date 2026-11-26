@@ -4,13 +4,13 @@
  * Il contient les fonctions pour créer un objectif, récupérer tous les objectifs et basculer le statut d'un objectif.
  * Ces fonctions sont utilisées dans les routes correspondantes pour traiter les requêtes HTTP.
  * @version 1.0
- * @author Sooz (Sam)
+ * @author Sooz (Sam) et Copilot
  * @date 2026-03-02
  * @license MIT
 */
 
 import { Request, Response } from 'express';
-import { goalService } from '../services/goal.service.js';
+import { GoalNotFoundError, goalService } from '../services/goal.service.js';
 import type { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const goalController = {
@@ -71,12 +71,18 @@ export const goalController = {
         return res.status(401).json({ error: 'Utilisateur non authentifié.' });
       }
 
-      console.log('Toggle request:', { id, completed, userId });
+      if (typeof completed !== 'boolean') {
+        return res.status(400).json({ error: 'Le statut completed doit être un booléen.' });
+      }
+
       const updateGoal = await goalService.toggleGoal(Number(id), completed, userId);
-      res.json(updateGoal);
+      return res.json(updateGoal);
     } catch (error) {
-      console.error('Error in toggle:', error);
-      res.status(500).json({ error: 'Erreur lors de la mise a jour' });
+      if (error instanceof GoalNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      console.error('Erreur lors de la mise à jour de l’objectif :', error);
+      return res.status(500).json({ error: 'Erreur lors de la mise à jour.' });
     }
   },
 
@@ -89,15 +95,14 @@ export const goalController = {
         return res.status(401).json({ error: 'Utilisateur non authentifié.' });
       }
 
-      const deletedGoal = await goalService.deleteGoal(Number(id), userId);
-      if (deletedGoal) {
-        res.json({ message: 'Objectif supprimé avec succès' });
-      } else {
-        res.status(404).json({ error: 'Objectif non trouvé' });
-      }
+      await goalService.deleteGoal(Number(id), userId);
+      return res.json({ message: 'Objectif supprimé avec succès' });
     } catch (error) {
-      console.error('Error in delete:', error);
-      res.status(500).json({ error: 'Erreur lors de la suppression' });
+      if (error instanceof GoalNotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      console.error('Erreur lors de la suppression de l’objectif :', error);
+      return res.status(500).json({ error: 'Erreur lors de la suppression.' });
     }
   }
 };

@@ -1,7 +1,7 @@
 /**
  * @file AuthPage.tsx
  * @description Présente les formulaires de connexion et de création de compte.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

@@ -1,7 +1,7 @@
 /**
  * @file GoalGet.tsx
  * @description Affiche les objectifs par jour et permet de les terminer ou de les supprimer.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

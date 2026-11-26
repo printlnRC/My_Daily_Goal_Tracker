@@ -3,7 +3,7 @@
  * @description Contrôleur pour gérer les graphiques des objectifs (goals) de l'application.
  * Il contient les fonctions pour récupérer les données nécessaires à la génération des graphiques.
  * @version 1.0
- * @author Sooz (Sam)
+ * @author Sooz (Sam) et Copilot
  * @date 2026-03-02
  * @license MIT
  */

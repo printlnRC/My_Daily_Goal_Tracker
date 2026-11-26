@@ -1,7 +1,7 @@
 /**
  * @file Header.tsx
  * @description Affiche l’en-tête du site et la navigation du compte connecté.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

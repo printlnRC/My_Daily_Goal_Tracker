@@ -1,7 +1,7 @@
 /**
  * @file apiClient.ts
  * @description Centralise les requêtes HTTP vers l’API et la gestion des erreurs de session.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

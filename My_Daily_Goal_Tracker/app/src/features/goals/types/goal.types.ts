@@ -1,7 +1,7 @@
 /**
  * @file goal.types.ts
  * @description Déclare les types et constantes partagés pour les objectifs.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

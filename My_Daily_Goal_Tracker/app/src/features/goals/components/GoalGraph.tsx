@@ -1,7 +1,7 @@
 /**
  * @file GoalGraph.tsx
  * @description Affiche le graphique des objectifs par jour avec filtre de priorité.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

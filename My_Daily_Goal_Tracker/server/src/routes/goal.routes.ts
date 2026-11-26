@@ -2,7 +2,7 @@
  * @file goal.routes.ts
  * @description Routes pour gérer les objectifs (goals) de l'application.
  * @version 1.0
- * @author Sooz (Sam)
+ * @author Sooz (Sam) et Copilot
  * @date 2026-03-02
  * @license MIT
  */

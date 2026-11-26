@@ -1,7 +1,7 @@
 /**
  * @file goalService.ts
  * @description Regroupe les appels API de gestion des objectifs et du graphique.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

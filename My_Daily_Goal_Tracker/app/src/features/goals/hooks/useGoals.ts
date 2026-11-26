@@ -1,7 +1,7 @@
 /**
  * @file useGoals.ts
  * @description Gère le chargement et les opérations CRUD des objectifs utilisateur.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

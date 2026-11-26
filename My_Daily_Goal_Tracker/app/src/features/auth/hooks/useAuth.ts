@@ -1,7 +1,7 @@
 /**
  * @file useAuth.ts
  * @description Gère la restauration de session et les actions d’authentification.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

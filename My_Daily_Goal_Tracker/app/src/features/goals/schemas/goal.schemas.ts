@@ -1,7 +1,7 @@
 /**
  * @file goal.schemas.ts
  * @description Définit les règles de validation du formulaire de création d’objectif.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

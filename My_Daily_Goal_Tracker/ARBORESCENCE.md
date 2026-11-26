@@ -15,13 +15,17 @@ My_Daily_Goal_Tracker/
 │   │   │   │   ├── schemas/auth.schemas.ts    # Validation des identifiants
 │   │   │   │   ├── services/authService.ts   # Appels API d’authentification
 │   │   │   │   └── types/auth.types.ts       # Types d’authentification
-│   │   │   └── goals/
-│   │   │       ├── components/               # Formulaire, liste et graphique
-│   │   │       ├── context/GoalsContext.tsx  # État partagé des objectifs
-│   │   │       ├── hooks/                    # CRUD et statistiques hebdomadaires
-│   │   │       ├── schemas/                  # Validation des objectifs
-│   │   │       ├── services/goalService.ts   # Appels API des objectifs
-│   │   │       └── types/                    # Types objectifs et graphique
+│   │   │   ├── goals/
+│   │   │   │   ├── components/               # Formulaire, liste et graphique
+│   │   │   │   ├── context/GoalsContext.tsx  # État partagé des objectifs
+│   │   │   │   ├── hooks/                    # CRUD et statistiques hebdomadaires
+│   │   │   │   ├── schemas/                  # Validation des objectifs
+│   │   │   │   ├── services/goalService.ts   # Appels API des objectifs
+│   │   │   │   └── types/                    # Types objectifs et graphique
+│   │   │   └── badges/
+│   │   │       ├── hooks/useBadges.ts        # Charge les compteurs des badges
+│   │   │       ├── services/badgeService.ts  # Appel API des badges
+│   │   │       └── types/badge.types.ts      # Types de badges
 │   │   ├── lib/apiClient.ts                  # Fetch, cookies et erreurs HTTP
 │   │   ├── pages/                            # AuthPage, DashboardPage, AccountPage
 │   │   ├── App.tsx                           # Session et sélection de page
@@ -32,13 +36,13 @@ My_Daily_Goal_Tracker/
 │   ├── package.json
 │   └── vite.config.js                        # Proxy API configurable
 ├── server/
-│   ├── prisma/                               # Schéma, migrations et seed Prisma
+│   ├── prisma/                               # Schéma, migration hebdomadaire et seed Prisma
 │   ├── src/
-│   │   ├── controllers/                      # Contrôleurs auth, objectifs et graphique
-│   │   ├── lib/                              # Authentification et Prisma
+│   │   ├── controllers/                      # Contrôleurs auth, objectifs, graphique et badges
+│   │   ├── lib/                             # Authentification, Prisma, semaine, planificateur
 │   │   ├── middlewares/auth.middleware.ts
-│   │   ├── routes/                           # auth.routes et goal.routes
-│   │   ├── services/                         # goal.service et goalGraph.service
+│   │   ├── routes/                           # Routes auth, objectifs et badges
+│   │   ├── services/                         # Objectifs, occurrences, graphique et badges
 │   │   └── index.ts
 │   ├── .env.example
 │   ├── Dockerfile

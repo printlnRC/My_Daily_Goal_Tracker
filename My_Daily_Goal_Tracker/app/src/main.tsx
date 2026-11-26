@@ -1,7 +1,7 @@
 /**
  * @file main.tsx
  * @description Monte l’application React et configure l’affichage des notifications.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-17
  * @version 1.0.0
  * @license MIT

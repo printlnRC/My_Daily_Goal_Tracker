@@ -1,7 +1,7 @@
 /**
  * @file App.tsx
  * @description Sélectionne la page affichée selon l’état d’authentification.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT

@@ -1,7 +1,7 @@
 /**
  * @file PriorityBadge.tsx
  * @description Affiche le badge coloré correspondant à la priorité d’un objectif.
- * @author Copilot
+ * @author Sooz (Sam) et Copilot
  * @date 2026-11-18
  * @version 1.0.0
  * @license MIT
